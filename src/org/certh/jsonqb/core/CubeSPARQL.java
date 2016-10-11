@@ -75,7 +75,7 @@ public class CubeSPARQL {
 				+ "select  distinct ?res ?label where {"
 				+ "?observation qb:dataSet <" + cubeURI + ">." 
 				+ "?observation <" + dimensionURI + "> ?res."
-				+ "OPTIONAL{?res skos:prefLabel|rdfs:label ?label}}";
+				+ "OPTIONAL{?res skos:prefLabel|rdfs:label ?label}}"; 
 
 		TupleQueryResult res = QueryExecutor.executeSelect(getDimensionValues_query, SPARQLservice);
 		List<LDResource> dimensionValues = SPARQLresultTransformer.toLDResourceList(res);
