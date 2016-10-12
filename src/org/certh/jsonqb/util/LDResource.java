@@ -10,8 +10,16 @@ public class LDResource implements Comparable<LDResource> {
 	
 	private String URI;
 	private List<Label> labels=new ArrayList<Label>();
-	//private String level;
+	private int order;
 	
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
 	public LDResource() {
 		super();
 	}

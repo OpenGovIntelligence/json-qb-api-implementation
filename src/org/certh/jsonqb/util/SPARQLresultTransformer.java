@@ -1,6 +1,7 @@
 package org.certh.jsonqb.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +28,9 @@ public class SPARQLresultTransformer {
 						ldr.addLabel((Literal) bindingSet.getValue("label"));
 					}
 
-				//	if (bindingSet.getValue("level") != null) {
-				//		ldr.setLevel(bindingSet.getValue("level").stringValue());
-				//	}
+					if (bindingSet.getValue("position") != null) {
+						ldr.setOrder(Integer.valueOf(bindingSet.getValue("position").stringValue()));
+					}
 					
 					listOfResources.add(ldr);
 				} else {
@@ -41,9 +42,9 @@ public class SPARQLresultTransformer {
 						existingLDR.addLabel((Literal) bindingSet.getValue("label"));
 					}
 
-				//	if (bindingSet.getValue("level") != null) {
-				//		existingLDR.setLevel(bindingSet.getValue("level").stringValue());
-				//	}
+					if (bindingSet.getValue("position") != null) {
+						ldr.setOrder(Integer.valueOf(bindingSet.getValue("position").stringValue()));
+					}
 
 					listOfResources.set(index, existingLDR);
 				}
@@ -54,7 +55,7 @@ public class SPARQLresultTransformer {
 		return listOfResources;
 	}
 	
-	public static List<LDResource> toLDResourceOrderedList(TupleQueryResult res) {
+/*	public static List<LDResource> toLDResourceOrderedList(TupleQueryResult res) {
 
 		
 		Map<Integer,LDResource> mapPositionResource=new HashMap<Integer, LDResource>();
@@ -97,14 +98,15 @@ public class SPARQLresultTransformer {
 			e.printStackTrace();
 		}
 		
-		List<LDResource> listOfResources = new ArrayList<LDResource>(mapPositionResource.keySet().size());
+		LDResource[] listOfResources= new LDResource[mapPositionResource.size()];
 		for(Integer i: mapPositionResource.keySet()){
-			listOfResources.add(i, mapPositionResource.get(i));
+			listOfResources[i-1]= mapPositionResource.get(i);
 		}
 		
-		return listOfResources;
+		List<LDResource> list= Arrays.asList(listOfResources);
+		return list;
 
-	}
+	}*/
 	
 
 	public static List<String> toStringList(TupleQueryResult res) {

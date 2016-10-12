@@ -15,7 +15,7 @@ public class Label {
 		if (literal.getLabel()!=null){
 			this.label=literal.getLabel();
 		}
-		if (literal.getLanguage()!=null){
+		if (literal.getLanguage().isPresent()){
 			this.language=literal.getLanguage().get();
 		}
 	}

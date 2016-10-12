@@ -4,7 +4,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 
 public interface RESTapi {
@@ -34,6 +36,16 @@ public interface RESTapi {
 	@Produces("application/json")
 	@Path("/attribute-values")
 	public Response getAttributeValues(@QueryParam("dataset")String datasetURI, @QueryParam("attribute")String attributeURI) ;
+	
+	@GET
+	@Produces("application/json")
+	@Path("/dimension-levels")
+	public Response getDimensionLevels(@QueryParam("dataset")String datasetURI, @QueryParam("dimension")String dimensionURI) ;
+	
+	@GET
+	@Produces("application/json")
+	@Path("/slice")
+	public Response getSlice(@Context UriInfo info);
 	
 	
 }
