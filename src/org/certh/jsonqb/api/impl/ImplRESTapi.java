@@ -154,7 +154,8 @@ public class ImplRESTapi implements RESTapi {
 			
 			List<Map<String,String>> slice=CubeSPARQL.getSlice(visualDims, fixedDims, selectedMeasures, datasetURI, SPARQLservice);
 			Gson g=new Gson();
-			String json = g.toJson(slice);			
+			String json = g.toJson(slice);	
+			System.out.println(json);
 			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
