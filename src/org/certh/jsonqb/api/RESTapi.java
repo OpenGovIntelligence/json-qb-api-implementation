@@ -14,6 +14,11 @@ public interface RESTapi {
 
 	@GET
 	@Produces("application/json")
+	@Path("/cubes")
+	public Response getCubes();
+	
+	@GET
+	@Produces("application/json")
 	@Path("/dimensions")
 	public Response getDimensions(@QueryParam("dataset")String datasetURI) ;
 	
@@ -46,6 +51,11 @@ public interface RESTapi {
 	@Produces("application/json")
 	@Path("/slice")
 	public Response getSlice(@Context UriInfo info);
+	
+	@GET
+	@Produces("application/json")
+	@Path("/table")
+	public Response getTable(@Context UriInfo info);
 	
 	
 }

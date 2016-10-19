@@ -73,5 +73,11 @@
 			<artifactId>gson</artifactId>
 			<version>2.7</version>			
 		</dependency>
+		<dependency>
+		    <groupId>no.ssb.jsonstat</groupId>
+		    <artifactId>json-stat-java</artifactId>
+		    <version>0.1.3</version>
+		</dependency>
+
 	</dependencies>
 </project>

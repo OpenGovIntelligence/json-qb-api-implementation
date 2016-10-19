@@ -1,7 +1,6 @@
 package org.certh.jsonqb.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +125,28 @@ public class SPARQLresultTransformer {
 		}
 
 		return listOfString;
+	}
+	
+	public static List<Number> toNumberList(TupleQueryResult res, List<String> measures) {
+
+		List<Number> listOfNumbers = new ArrayList<Number>();
+		try {
+			while (res.hasNext()) {
+				BindingSet bindingSet = res.next();
+				int  i=1;
+				for (String meas : measures) {
+					String number=bindingSet.getValue("measure" + i ).stringValue();
+					if(!number.equals("")){
+						listOfNumbers.add(Double.parseDouble(number));
+					}
+					i++;
+				}			
+			}
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		}
+
+		return listOfNumbers;
 
 	}
 	
