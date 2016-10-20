@@ -14,12 +14,14 @@ import javax.ws.rs.core.UriInfo;
 
 import org.certh.jsonqb.api.RESTapi;
 import org.certh.jsonqb.core.CubeSPARQL;
+import org.certh.jsonqb.util.JsonStatUtil;
 import org.certh.jsonqb.util.LDResource;
 import org.certh.jsonqb.util.PropertyFileReader;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
+import no.ssb.jsonstat.JsonStatSerializer;
 import no.ssb.jsonstat.v2.Dataset;
 import no.ssb.jsonstat.v2.Dimension;
 
@@ -34,7 +36,8 @@ public class ImplRESTapi implements RESTapi {
 			SPARQLservice = pfr.getSPARQLservice();
 			List<LDResource> cubes= CubeSPARQL.getCubes(SPARQLservice);
 			Gson g=new Gson();
-			String json = g.toJson(cubes);			
+			String json = g.toJson(cubes);	
+			System.out.println(json);
 			return Response.ok(json).build();
 			
 		} catch (IOException e) {
@@ -52,7 +55,7 @@ public class ImplRESTapi implements RESTapi {
 			List<LDResource> dimensions= CubeSPARQL.getDataCubeDimensions(datasetURI, SPARQLservice);
 			Gson g=new Gson();
 			String json = g.toJson(dimensions);
-			
+			System.out.println(json);
 			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
@@ -68,7 +71,7 @@ public class ImplRESTapi implements RESTapi {
 			List<LDResource> measures= CubeSPARQL.getDataCubeMeasures(datasetURI, SPARQLservice);
 			Gson g=new Gson();
 			String json = g.toJson(measures);
-			
+			System.out.println(json);
 			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
@@ -84,7 +87,7 @@ public class ImplRESTapi implements RESTapi {
 			List<LDResource> attributes= CubeSPARQL.getDataCubeAttributes(datasetURI, SPARQLservice);
 			Gson g=new Gson();
 			String json = g.toJson(attributes);
-			
+			System.out.println(json);
 			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
@@ -101,7 +104,7 @@ public class ImplRESTapi implements RESTapi {
 					datasetURI, SPARQLservice);
 			Gson g=new Gson();
 			String json = g.toJson(dimensionValues);
-			
+			System.out.println(json);
 			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
@@ -118,7 +121,7 @@ public class ImplRESTapi implements RESTapi {
 					datasetURI, SPARQLservice);
 			Gson g=new Gson();
 			String json = g.toJson(attributeValues);
-			
+			System.out.println(json);
 			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
@@ -133,7 +136,8 @@ public class ImplRESTapi implements RESTapi {
 			SPARQLservice = pfr.getSPARQLservice();
 			List<LDResource> dimensionLevels= CubeSPARQL.getCubeDimensionLevels(dimensionURI,datasetURI,SPARQLservice);
 			Gson g=new Gson();
-			String json = g.toJson(dimensionLevels);			
+			String json = g.toJson(dimensionLevels);	
+			System.out.println(json);
 			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
@@ -222,50 +226,37 @@ public class ImplRESTapi implements RESTapi {
 				measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
 			}
 			
-		//	selectedMeasures.add(measures.get(0).getURI());
 			
 			List<Number> table=CubeSPARQL.getTable(visualDims, fixedDims, selectedMeasures, datasetURI, SPARQLservice);
 			
-				
-	   	Dataset.Builder builder = Dataset.create();
-			//int i=1;
+			Dataset.Builder jsonStatBuilder = Dataset.create();
 			for(String dim:visualDims){
-				List<LDResource> dimValues=CubeSPARQL.getDimensionAttributeValues(
-						dim, datasetURI, SPARQLservice);
+				List<LDResource> dimValues=CubeSPARQL.getDimensionAttributeValues(dim, datasetURI, SPARQLservice);
 				Map<String,String> dimURILabelMap=new TreeMap<String,String>();
-			//	List<String> dimLabel=new ArrayList<String>();
+			
 				for(LDResource ldr:dimValues){
-					dimURILabelMap.put(ldr.getURI(), ldr.getURIorLabel());
-				//	dimLabel.add(ldr.getURIorLabel());
-					
+					dimURILabelMap.put(ldr.getURI(), ldr.getURIorLabel());					
 				}
-				 builder.withDimension(Dimension.create(dim)
+				jsonStatBuilder.withDimension(Dimension.create(dim)
 			                .withIndexedLabels(ImmutableMap.copyOf(dimURILabelMap)));		
-				//i++;
 			}
 		
-			builder.withDimension(Dimension.create("measure")
+			jsonStatBuilder.withDimension(Dimension.create("measure")
 					.withIndexedLabels(ImmutableMap.copyOf(measureURILabelMap)));	
 			
 			
-			Dataset jsonstat = builder.withValues(table).build();
+			Dataset jsonstatDataset = jsonStatBuilder.withValues(table).build();
 				
 			Gson g=new Gson();
-			String json = g.toJson(jsonstat);	
-			json=json.replaceAll(",\"version\":\"TWO\",\"clazz\":\"DIMENSION\"", "");
-			json=json.replaceAll(",\"version\":\"TWO\",\"clazz\":\"DATASET\"", "");
-			json="{\"class\" : \"dataset\","+json.substring(1, json.length());
+			String jsonStat = JsonStatUtil.cleanJsonStat(g.toJson(jsonstatDataset));	
+			jsonStat=JsonStatUtil.jsonStatAddClass(jsonStat);
+			System.out.println(jsonStat);			
+			return Response.ok(jsonStat).build();
 			
-			System.out.println(json);
-			
-			
-			return Response.ok(json).build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
 	}
-
-
 }
 
 
