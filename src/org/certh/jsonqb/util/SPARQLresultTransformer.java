@@ -127,7 +127,7 @@ public class SPARQLresultTransformer {
 		return listOfString;
 	}
 	
-	public static List<Number> toNumberList(TupleQueryResult res, List<String> measures) {
+	public static List<Number> toNumberLists(TupleQueryResult res, List<String> measures) {
 
 		List<Number> listOfNumbers = new ArrayList<Number>();
 		try {
@@ -149,6 +149,58 @@ public class SPARQLresultTransformer {
 		return listOfNumbers;
 
 	}
+	
+	
+	public static QBTable toQBTable(TupleQueryResult res,
+			List<String> measures, List<String> visualDims) {
+
+		List<Number> listOfNumbers = new ArrayList<Number>();
+		Map<String,List<String>> dimVals=new HashMap<String,List<String>>();
+		QBTable qbt=new QBTable();
+		try {
+			while (res.hasNext()) {
+				BindingSet bindingSet = res.next();
+				int  i=1;
+				//Add number results
+				for (String meas : measures) {
+					String number=bindingSet.getValue("measure" + i ).stringValue();
+					if(!number.equals("")){
+						listOfNumbers.add(Double.parseDouble(number));
+					}
+					i++;
+				}	
+				
+				i=1;
+				//Add dimension values used by the result (ordered)
+				for(String dim:visualDims){
+					String value=bindingSet.getValue("dim"+i).stringValue();
+					if(!dimVals.keySet().contains(dim)){
+						List<String> tmpdimvals=new ArrayList<String>();
+						tmpdimvals.add(value);
+						dimVals.put(dim, tmpdimvals);
+					}else{
+						List<String> tmpdimvals=dimVals.get(dim);
+						if(!tmpdimvals.contains(value)){
+							tmpdimvals.add(value);
+							dimVals.put(dim, tmpdimvals);
+						}
+					}
+					i++;
+				}				
+			}			
+			
+			qbt.setMeasures(listOfNumbers);
+			qbt.setDimVals(dimVals);
+			
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		}
+
+		return qbt;
+
+	}
+	
+	
 	
 	public static List<Map<String,String>> toMapList(TupleQueryResult res, Map<String,String> mapVariableNameURI) {
 
@@ -177,4 +229,14 @@ public class SPARQLresultTransformer {
 	}
 	
 	
+	public static LDResource toLDResource(String resURI,TupleQueryResult res) {
+		LDResource ldr = new LDResource(resURI);
+		while (res.hasNext()) {
+			BindingSet bindingSet = res.next();
+			ldr.addLabel((Literal) bindingSet.getValue("label"));
+			
+
+		}
+		return ldr;
+	}	
 }
