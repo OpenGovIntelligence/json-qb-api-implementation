@@ -40,7 +40,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(cubes);	
 			System.out.println(json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 			
 		} catch (IOException e) {
 			return Response.serverError().build();
@@ -58,7 +60,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(dimensions);
 			System.out.println(json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
@@ -74,7 +78,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(measures);
 			System.out.println(json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
@@ -90,7 +96,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(attributes);
 			System.out.println(json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
@@ -112,7 +120,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(jsonDimVal);
 			System.out.println("--->"+json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
@@ -129,7 +139,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(attributeValues);
 			System.out.println(json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
@@ -145,7 +157,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(dimensionLevels);	
 			System.out.println(json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
@@ -195,7 +209,9 @@ public class ImplRESTapi implements RESTapi {
 			Gson g=new Gson();
 			String json = g.toJson(slice);	
 			System.out.println(json);
-			return Response.ok(json).build();
+			return Response.ok(json)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} catch (IOException e) {
 			return Response.serverError().build();
 		}
@@ -306,7 +322,9 @@ public class ImplRESTapi implements RESTapi {
 			String jsonStat = JsonStatUtil.cleanJsonStat(g.toJson(jsonstatDataset));	
 			jsonStat=JsonStatUtil.jsonStatAddClass(jsonStat);
 			System.out.println(jsonStat);			
-			return Response.ok(jsonStat).build();
+			return Response.ok(jsonStat)
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 			
 		} catch (IOException e) {
 			return Response.serverError().build();
