@@ -1,7 +1,8 @@
-package org.certh.jsonqb.util;
+package org.certh.jsonqb.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.rdf4j.model.Literal;
 
 

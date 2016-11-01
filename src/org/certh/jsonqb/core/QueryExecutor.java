@@ -1,4 +1,4 @@
-package org.certh.jsonqb.util;
+package org.certh.jsonqb.core;
 
 import org.eclipse.rdf4j.query.BooleanQuery;
 import org.eclipse.rdf4j.query.MalformedQueryException;
@@ -17,11 +17,7 @@ public class QueryExecutor {
 	// Input the query to execute and the triple store URI
 	public static TupleQueryResult executeSelect(String queryString, String endpointUrl) {
 		
-//		try {
-//			URLEncoder.encode(queryString, "UTF-8");
-//		} catch (UnsupportedEncodingException e1) {
-//			e1.printStackTrace();
-//		}
+
 		Repository repo = new SPARQLRepository(endpointUrl);
 		repo.initialize();
 		RepositoryConnection con = repo.getConnection();

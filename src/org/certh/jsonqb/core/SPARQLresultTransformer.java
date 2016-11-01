@@ -1,10 +1,18 @@
-package org.certh.jsonqb.util;
+package org.certh.jsonqb.core;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.Observation;
+import org.certh.jsonqb.datamodel.QBTable;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.QueryEvaluationException;
@@ -52,61 +60,7 @@ public class SPARQLresultTransformer {
 			e.printStackTrace();
 		}
 		return listOfResources;
-	}
-	
-/*	public static List<LDResource> toLDResourceOrderedList(TupleQueryResult res) {
-
-		
-		Map<Integer,LDResource> mapPositionResource=new HashMap<Integer, LDResource>();
-		try {
-			while (res.hasNext()) {
-				BindingSet bindingSet = res.next();
-				LDResource ldr = new LDResource(bindingSet.getValue("res").stringValue());
-				Integer position=new Integer(bindingSet.getValue("position").stringValue());
-
-				// Add the resource if not already at the list
-				if (!mapPositionResource.containsKey(position)) {
-					// check if there is a label (rdfs:label or skos:prefLabel)
-					if (bindingSet.getValue("label") != null) {
-						ldr.addLabel((Literal) bindingSet.getValue("label"));
-					}
-
-				//	if (bindingSet.getValue("level") != null) {
-				//		ldr.setLevel(bindingSet.getValue("level").stringValue());
-				//	}
-					
-					mapPositionResource.put(position, ldr);
-					
-				} else {
-					
-					LDResource existingLDR = mapPositionResource.get(position);
-
-					// check if there is a label (rdfs:label or skos:prefLabel)
-					if (bindingSet.getValue("label") != null) {
-						existingLDR.addLabel((Literal) bindingSet.getValue("label"));
-					}
-
-				//	if (bindingSet.getValue("level") != null) {
-				//		existingLDR.setLevel(bindingSet.getValue("level").stringValue());
-				//	}
-
-					mapPositionResource.put(position, existingLDR);
-				}
-			}
-		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
-		}
-		
-		LDResource[] listOfResources= new LDResource[mapPositionResource.size()];
-		for(Integer i: mapPositionResource.keySet()){
-			listOfResources[i-1]= mapPositionResource.get(i);
-		}
-		
-		List<LDResource> list= Arrays.asList(listOfResources);
-		return list;
-
-	}*/
-	
+	}	
 
 	public static List<String> toStringList(TupleQueryResult res) {
 
@@ -155,25 +109,32 @@ public class SPARQLresultTransformer {
 			List<String> measures, List<String> visualDims) {
 
 		List<Number> listOfNumbers = new ArrayList<Number>();
+		List<Observation> listOfObservations=new ArrayList<Observation>();
 		Map<String,List<String>> dimVals=new HashMap<String,List<String>>();
 		QBTable qbt=new QBTable();
 		try {
-			while (res.hasNext()) {
+			//create a list of observations
+			while (res.hasNext()) {				
+				Observation obs=new Observation();
 				BindingSet bindingSet = res.next();
+				
 				int  i=1;
-				//Add number results
+				
+				//Add measure to observation
 				for (String meas : measures) {
 					String number=bindingSet.getValue("measure" + i ).stringValue();
-					if(!number.equals("")){
-						listOfNumbers.add(Double.parseDouble(number));
-					}
+					obs.putObservationValue(meas, number);
 					i++;
 				}	
 				
 				i=1;
-				//Add dimension values used by the result (ordered)
+				
+				//Add dimension values to observation 
 				for(String dim:visualDims){
 					String value=bindingSet.getValue("dim"+i).stringValue();
+					obs.putObservationValue(dim, value);
+					
+					//collect dimension values of result
 					if(!dimVals.keySet().contains(dim)){
 						List<String> tmpdimvals=new ArrayList<String>();
 						tmpdimvals.add(value);
@@ -186,8 +147,48 @@ public class SPARQLresultTransformer {
 						}
 					}
 					i++;
-				}				
-			}			
+				}	
+				listOfObservations.add(obs);				
+			}	
+			
+			//Sort dimension values
+			for(String dim:dimVals.keySet()){
+				List<String> values=dimVals.get(dim);
+				Collections.sort(values);
+				dimVals.put(dim, values);				
+			}
+			
+			String rowDim=visualDims.get(0);
+			String colDim=visualDims.get(1);
+			List<String> rowDimValues=dimVals.get(rowDim);
+			List<String> colDimValues=dimVals.get(colDim);
+					
+			int obsIndex=0;
+			//Order of observations are in row major order 
+			for(String rowVal:rowDimValues){
+				for(String colVal:colDimValues){
+					if(listOfObservations.size()>obsIndex){
+						Observation currentObs=listOfObservations.get(obsIndex);
+						String obsRowVal=currentObs.getObservationValues().get(rowDim);
+						String obsColVal=currentObs.getObservationValues().get(colDim);
+						if(rowVal.equals(obsRowVal)&&colVal.equals(obsColVal)){
+							for (String meas : measures) {
+								listOfNumbers.add(Double.parseDouble(currentObs.getObservationValues().get(meas)));
+							}	
+							obsIndex++;
+						}else{
+							for (String meas : measures) {
+								listOfNumbers.add(null);
+							}
+						}		
+					}else{
+						for (String meas : measures) {
+							listOfNumbers.add(null);
+							
+						}
+					}								
+				}
+			}
 			
 			qbt.setMeasures(listOfNumbers);
 			qbt.setDimVals(dimVals);
@@ -213,8 +214,7 @@ public class SPARQLresultTransformer {
 				//	if(bindingSet.getValue(varName)!=null){
 						String value=bindingSet.getValue(varName).stringValue();
 						observation.put(mapVariableNameURI.get(varName), value);						
-				//	}
-					
+				//	}					
 				}
 				
 				listOfObservations.add(observation);
@@ -225,7 +225,6 @@ public class SPARQLresultTransformer {
 		}
 
 		return listOfObservations;
-
 	}
 	
 	

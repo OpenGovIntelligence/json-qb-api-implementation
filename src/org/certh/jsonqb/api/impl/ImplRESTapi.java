@@ -14,16 +14,15 @@ import javax.ws.rs.core.UriInfo;
 
 import org.certh.jsonqb.api.RESTapi;
 import org.certh.jsonqb.core.CubeSPARQL;
-import org.certh.jsonqb.util.DimensionValues;
+import org.certh.jsonqb.datamodel.DimensionValues;
+import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.util.JsonStatUtil;
-import org.certh.jsonqb.util.LDResource;
 import org.certh.jsonqb.util.PropertyFileReader;
-import org.certh.jsonqb.util.QBTable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
-import no.ssb.jsonstat.JsonStatSerializer;
 import no.ssb.jsonstat.v2.Dataset;
 import no.ssb.jsonstat.v2.Dimension;
 
@@ -244,7 +243,6 @@ public class ImplRESTapi implements RESTapi {
 				}				
 			}			
 			
-			
 			List<String> visualDims=new ArrayList<String>();
 			visualDims.add(rowDimensionURI);
 			visualDims.add(columnDimensionURI);
@@ -255,11 +253,13 @@ public class ImplRESTapi implements RESTapi {
 				
 			Map<String,String> measureURILabelMap=new TreeMap<String,String>();
 			for(LDResource meas:measures){
+				//if there is a selected measure 
 				if(!measure.equals("")){
 					if(meas.getURI().equals(measure)){
 						selectedMeasures.add(meas.getURI());	
 						measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
 					}
+				//if there is no selected measure, assume all measures as selected
 				}else{
 					selectedMeasures.add(meas.getURI());	
 					measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
@@ -270,13 +270,12 @@ public class ImplRESTapi implements RESTapi {
 			QBTable table=CubeSPARQL.getTable(visualDims, fixedDims, selectedMeasures, datasetURI, SPARQLservice);
 			
 			Dataset.Builder jsonStatBuilder = Dataset.create();
-			
-			 long startTime = System.currentTimeMillis();
+						
 			for(String dim:visualDims){
 				Map<String,String> dimURILabelMap=new TreeMap<String,String>();
 							
-				List<String> dimValues=table.getDimVals().get(dim);
-				for(String val:dimValues){
+				List<String> tabledimValues=table.getDimVals().get(dim);
+				for(String val:tabledimValues){
 					LDResource ldr=CubeSPARQL.getLabels(val,SPARQLservice);
 					dimURILabelMap.put(ldr.getURI(), ldr.getURIorLabel());
 				}
@@ -287,29 +286,7 @@ public class ImplRESTapi implements RESTapi {
 				jsonStatBuilder.withDimension(Dimension.create(dim)
 							.withLabel(dimLDR.getURIorLabel())
 			                .withIndexedLabels(ImmutableMap.copyOf(dimURILabelMap)));		
-			}
-			
-			
-		/*	
-		for(String dim:visualDims){
-				List<LDResource> allDimValues=CubeSPARQL.getDimensionAttributeValues(dim, datasetURI, SPARQLservice);
-				Map<String,String> dimURILabelMap=new TreeMap<String,String>();
-			
-				List<String> tabledimValues=table.getDimVals().get(dim);
-				for(LDResource ldr:allDimValues){
-					if(tabledimValues.contains(ldr.getURI())){
-						dimURILabelMap.put(ldr.getURI(), ldr.getURIorLabel());
-					}
-				}
-				
-				LDResource dimLDR=CubeSPARQL.getLabels(dim, SPARQLservice);
-				jsonStatBuilder.withDimension(Dimension.create(dim)
-							.withLabel(dimLDR.getURIorLabel())
-			                .withIndexedLabels(ImmutableMap.copyOf(dimURILabelMap)));		
-			}*/
-		 long stopTime = System.currentTimeMillis();
-	      long elapsedTime = stopTime - startTime;
-	      System.out.println(elapsedTime);
+			}	
 		
 		//	jsonStatBuilder.withDimension(Dimension.create("Measure")
 		//			.withLabel("Measure")
@@ -322,6 +299,7 @@ public class ImplRESTapi implements RESTapi {
 			String jsonStat = JsonStatUtil.cleanJsonStat(g.toJson(jsonstatDataset));	
 			jsonStat=JsonStatUtil.jsonStatAddClass(jsonStat);
 			System.out.println(jsonStat);			
+		
 			return Response.ok(jsonStat)
 					.header("Access-Control-Allow-Origin", "*")
 					.build();

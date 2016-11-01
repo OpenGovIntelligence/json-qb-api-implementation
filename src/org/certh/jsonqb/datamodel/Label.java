@@ -1,4 +1,4 @@
-package org.certh.jsonqb.util;
+package org.certh.jsonqb.datamodel;
 
 import org.eclipse.rdf4j.model.Literal;
 

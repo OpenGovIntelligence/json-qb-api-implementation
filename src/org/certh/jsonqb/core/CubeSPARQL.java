@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.certh.jsonqb.util.LDResource;
-import org.certh.jsonqb.util.QBTable;
-import org.certh.jsonqb.util.QueryExecutor;
-import org.certh.jsonqb.util.SPARQLresultTransformer;
+import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.QBTable;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 
 public class CubeSPARQL {
@@ -232,10 +230,7 @@ public class CubeSPARQL {
 	
 	public static QBTable getTable(List<String> visualDims, Map<String, String> fixedDims,
 			List<String> selectedMeasures, String cubeURI, String SPARQLservice) {
-
-	//	Map<String, String> mapVariableNameURI = new HashMap<String, String>();
-	//	mapVariableNameURI.put("obs", "id");
-
+	
 		String getSlice_query = "PREFIX  qb: <http://purl.org/linked-data/cube#>"
 				+ "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>"
 				+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" 
@@ -253,7 +248,6 @@ public class CubeSPARQL {
 		// Add measures ?meas to SPARQL query
 		for (String meas : selectedMeasures) {
 			getSlice_query += "?measure" + i + " ";
-	//		mapVariableNameURI.put("measure" + i, meas);
 			i++;
 		}
 
@@ -273,6 +267,7 @@ public class CubeSPARQL {
 		}
 
 		i = 1;
+		
 		// Add free dimensions to where clause
 		for (String vDim : visualDims) {
 			getSlice_query += "?obs <" + vDim + "> " + "?dim" + i + ". ";
@@ -295,7 +290,6 @@ public class CubeSPARQL {
 		
 		System.out.println(getSlice_query);
 		TupleQueryResult res = QueryExecutor.executeSelect(getSlice_query, SPARQLservice);
-		//List<Number> listOfONumbers = SPARQLresultTransformer.toQBTable(res, selectedMeasures, visualDims);
 		QBTable qbt=SPARQLresultTransformer.toQBTable(res, selectedMeasures, visualDims);
 
 		return qbt;
