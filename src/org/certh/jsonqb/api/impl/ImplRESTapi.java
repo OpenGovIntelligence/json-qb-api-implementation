@@ -16,6 +16,7 @@ import org.certh.jsonqb.api.RESTapi;
 import org.certh.jsonqb.core.CubeSPARQL;
 import org.certh.jsonqb.datamodel.DimensionValues;
 import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.util.JsonStatUtil;
 import org.certh.jsonqb.util.PropertyFileReader;
@@ -204,7 +205,7 @@ public class ImplRESTapi implements RESTapi {
 				}
 			}
 					
-			List<Map<String,String>> slice=CubeSPARQL.getSlice(visualDims, fixedDims, selectedMeasures, datasetURI, SPARQLservice);
+			List<Observation> slice=CubeSPARQL.getSlice(visualDims, fixedDims, selectedMeasures, datasetURI, SPARQLservice);
 			Gson g=new Gson();
 			String json = g.toJson(slice);	
 			System.out.println(json);
@@ -259,7 +260,7 @@ public class ImplRESTapi implements RESTapi {
 						selectedMeasures.add(meas.getURI());	
 						measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
 					}
-				//if there is no selected measure, assume all measures as selected
+				//if there is no selected measure, assume all measures are selected
 				}else{
 					selectedMeasures.add(meas.getURI());	
 					measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());

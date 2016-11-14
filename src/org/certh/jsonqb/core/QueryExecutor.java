@@ -17,7 +17,7 @@ public class QueryExecutor {
 	// Input the query to execute and the triple store URI
 	public static TupleQueryResult executeSelect(String queryString, String endpointUrl) {
 		
-
+System.out.println(queryString);
 		Repository repo = new SPARQLRepository(endpointUrl);
 		repo.initialize();
 		RepositoryConnection con = repo.getConnection();

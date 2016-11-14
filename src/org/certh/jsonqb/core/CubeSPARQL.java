@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTable;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 
@@ -157,7 +158,7 @@ public class CubeSPARQL {
 	}
 	
 
-	public static List<Map<String, String>> getSlice(List<String> visualDims, Map<String, String> fixedDims,
+	public static List<Observation> getSlice(List<String> visualDims, Map<String, String> fixedDims,
 			List<String> selectedMeasures, String cubeURI, String SPARQLservice) {
 
 		Map<String, String> mapVariableNameURI = new HashMap<String, String>();
@@ -222,7 +223,7 @@ public class CubeSPARQL {
 		
 		System.out.println(getSlice_query);
 		TupleQueryResult res = QueryExecutor.executeSelect(getSlice_query, SPARQLservice);
-		List<Map<String, String>> listOfObservations = SPARQLresultTransformer.toMapList(res, mapVariableNameURI);
+		List<Observation> listOfObservations = SPARQLresultTransformer.toObservationList(res, mapVariableNameURI);
 
 		return listOfObservations;
 

@@ -203,21 +203,20 @@ public class SPARQLresultTransformer {
 	
 	
 	
-	public static List<Map<String,String>> toMapList(TupleQueryResult res, Map<String,String> mapVariableNameURI) {
+	public static List<Observation> toObservationList(TupleQueryResult res, Map<String,String> mapVariableNameURI) {
 
-		List<Map<String,String>> listOfObservations =new ArrayList<Map<String,String>>();
+	//	List<Map<String,String>> listOfObservations =new ArrayList<Map<String,String>>();
+		List<Observation> listOfObservations=new ArrayList<Observation>();
 		try {
 			while (res.hasNext()) {
 				BindingSet bindingSet = res.next();
-				Map<String,String> observation=new HashMap<String, String>();
+				Observation obs=new Observation();
 				for(String varName:mapVariableNameURI.keySet()){
-				//	if(bindingSet.getValue(varName)!=null){
-						String value=bindingSet.getValue(varName).stringValue();
-						observation.put(mapVariableNameURI.get(varName), value);						
-				//	}					
+					String value=bindingSet.getValue(varName).stringValue();
+						obs.putObservationValue(mapVariableNameURI.get(varName), value);						
 				}
 				
-				listOfObservations.add(observation);
+				listOfObservations.add(obs);
 				
 			}
 		} catch (QueryEvaluationException e) {

@@ -13,7 +13,7 @@ public class PropertyFileReader {
 		
 		String SPARQLservice="";
 		
-		try {
+		
 			Properties prop = new Properties();
 			String propFileName = "config.prop";
  
@@ -26,12 +26,9 @@ public class PropertyFileReader {
 			} 
 			
 			SPARQLservice= prop.getProperty("SPARQLservice");
-					
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-		} finally {
+			
 			inputStream.close();
-		}
+		
 		return SPARQLservice;
 	}
 	
