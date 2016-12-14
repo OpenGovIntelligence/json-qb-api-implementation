@@ -15,7 +15,17 @@ public interface RESTapi {
 	@GET
 	@Produces("application/json")
 	@Path("/cubes")
-	public Response getCubes();
+	public Response getAllCubes();
+	
+	@GET
+	@Produces("application/json")
+	@Path("/aggregationSetcubes")
+	public Response getMaxAggregationSetCubes();
+	
+	@GET
+	@Produces("application/json")
+	@Path("/aggregationSetcubesAndWithoutAggregation")
+	public Response getMaxAggregationSetCubesAndCubesWithoutAggregation();
 	
 	@GET
 	@Produces("application/json")
@@ -56,6 +66,11 @@ public interface RESTapi {
 	@Produces("application/json")
 	@Path("/table")
 	public Response getTable(@Context UriInfo info);
+	
+	@GET
+	@Produces("application/json")
+	@Path("/dataset-metadata")
+	public Response getDataCubeMetadata(@QueryParam("dataset")String datasetURI) ;
 	
 	
 }

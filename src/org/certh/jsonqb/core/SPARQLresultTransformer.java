@@ -1,240 +1,235 @@
 package org.certh.jsonqb.core;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.Label;
 import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTable;
+import org.certh.jsonqb.util.ObservationList;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.query.BindingSet;
-import org.eclipse.rdf4j.query.QueryEvaluationException;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 
 public class SPARQLresultTransformer {
+	
+	private SPARQLresultTransformer() {
+		 // Throw an exception if this ever *is* called
+	    throw new AssertionError("Instantiating utility class.");
+	}
 
 	public static List<LDResource> toLDResourceList(TupleQueryResult res) {
-
-		List<LDResource> listOfResources = new ArrayList<LDResource>();
-		try {
-			while (res.hasNext()) {
-				BindingSet bindingSet = res.next();
-				LDResource ldr = new LDResource(bindingSet.getValue("res").stringValue());
-
-				// Add the resource if not already at the list
-				if (!listOfResources.contains(ldr)) {
-					// check if there is a label (rdfs:label or skos:prefLabel)
-					if (bindingSet.getValue("label") != null) {
-						ldr.addLabel((Literal) bindingSet.getValue("label"));
-					}
-
-					if (bindingSet.getValue("position") != null) {
-						ldr.setOrder(Integer.valueOf(bindingSet.getValue("position").stringValue()));
-					}
-					
-					listOfResources.add(ldr);
-				} else {
-					int index = listOfResources.indexOf(ldr);
-					LDResource existingLDR = listOfResources.get(index);
-
-					// check if there is a label (rdfs:label or skos:prefLabel)
-					if (bindingSet.getValue("label") != null) {
-						existingLDR.addLabel((Literal) bindingSet.getValue("label"));
-					}
-
-					if (bindingSet.getValue("position") != null) {
-						ldr.setOrder(Integer.valueOf(bindingSet.getValue("position").stringValue()));
-					}
-
-					listOfResources.set(index, existingLDR);
-				}
+	
+		String positionVat = "position";
+		List<LDResource> listOfResources = new ArrayList<>();
+		while (res.hasNext()) {
+			BindingSet bindingSet = res.next();
+			LDResource ldr = new LDResource(bindingSet.getValue("res").stringValue());	
+			if (bindingSet.getValue(positionVat) != null) {
+				ldr.setOrder(Integer.valueOf(bindingSet.getValue(positionVat).stringValue()));
 			}
-		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
-		}
+			listOfResources.add(ldr);
+		}				
 		return listOfResources;
-	}	
-
-	public static List<String> toStringList(TupleQueryResult res) {
-
-		List<String> listOfString = new ArrayList<String>();
-		try {
-			while (res.hasNext()) {
-				BindingSet bindingSet = res.next();
-				String str=bindingSet.getValue("str").stringValue();
-				if(!str.equals("")){
-					listOfString.add(str);
-				}
-				
-			}
-		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
-		}
-
-		return listOfString;
 	}
 	
-	public static List<Number> toNumberLists(TupleQueryResult res, List<String> measures) {
-
-		List<Number> listOfNumbers = new ArrayList<Number>();
-		try {
-			while (res.hasNext()) {
-				BindingSet bindingSet = res.next();
-				int  i=1;
-				for (String meas : measures) {
-					String number=bindingSet.getValue("measure" + i ).stringValue();
-					if(!number.equals("")){
-						listOfNumbers.add(Double.parseDouble(number));
-					}
-					i++;
-				}			
+	public static List<LDResource> toLDResourceListWithLabels(TupleQueryResult res, String sparqlService){
+		List<LDResource> listOfResources=toLDResourceList(res);
+		List<LDResource> listofLabeledLDResourceList=new  ArrayList<>();
+		
+		for(LDResource ldr: listOfResources){
+			if (ldr.getLabels().isEmpty()){
+				LDResource labeledLdr=CubeSPARQL.getLabels(ldr.getURI(), sparqlService);
+				listofLabeledLDResourceList.add(labeledLdr);
 			}
-		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
 		}
+		
+		return listofLabeledLDResourceList;
+		
+	}
 
+	public static List<String> toStringList(TupleQueryResult res) {
+		List<String> listOfString = new ArrayList<>();
+		while (res.hasNext()) {
+			BindingSet bindingSet = res.next();
+			String str = bindingSet.getValue("str").stringValue();
+			if (!"".equals(str)) {
+				listOfString.add(str);
+			}
+		}
+		return listOfString;
+	}
+
+	public static List<Number> toNumberLists(TupleQueryResult res, List<String> measures) {
+		List<Number> listOfNumbers = new ArrayList<>();
+		while (res.hasNext()) {
+			BindingSet bindingSet = res.next();
+			int i = 1;
+			for (String meas : measures) {
+				String number = bindingSet.getValue("measure" + i).stringValue();
+				if (!"".equals(number)) {
+					listOfNumbers.add(Double.parseDouble(number));
+				}
+				i++;
+			}
+		}
 		return listOfNumbers;
 
 	}
-	
-	
-	public static QBTable toQBTable(TupleQueryResult res,
-			List<String> measures, List<String> visualDims) {
 
-		List<Number> listOfNumbers = new ArrayList<Number>();
-		List<Observation> listOfObservations=new ArrayList<Observation>();
-		Map<String,List<String>> dimVals=new HashMap<String,List<String>>();
-		QBTable qbt=new QBTable();
-		try {
-			//create a list of observations
-			while (res.hasNext()) {				
-				Observation obs=new Observation();
-				BindingSet bindingSet = res.next();
-				
-				int  i=1;
-				
-				//Add measure to observation
-				for (String meas : measures) {
-					String number=bindingSet.getValue("measure" + i ).stringValue();
-					obs.putObservationValue(meas, number);
-					i++;
-				}	
-				
-				i=1;
-				
-				//Add dimension values to observation 
-				for(String dim:visualDims){
-					String value=bindingSet.getValue("dim"+i).stringValue();
-					obs.putObservationValue(dim, value);
-					
-					//collect dimension values of result
-					if(!dimVals.keySet().contains(dim)){
-						List<String> tmpdimvals=new ArrayList<String>();
-						tmpdimvals.add(value);
-						dimVals.put(dim, tmpdimvals);
-					}else{
-						List<String> tmpdimvals=dimVals.get(dim);
-						if(!tmpdimvals.contains(value)){
-							tmpdimvals.add(value);
-							dimVals.put(dim, tmpdimvals);
-						}
-					}
-					i++;
-				}	
-				listOfObservations.add(obs);				
-			}	
+	public static QBTable toQBTable(TupleQueryResult res, List<String> measures, List<String> visualDims,
+			String sparqlService) {
+		
+		ObservationList observationList =new ObservationList();
+		
+		QBTable qbt = new QBTable();
+
+		// create a list of observations
+		while (res.hasNext()) {
+			Observation obs = new Observation();
+			BindingSet bindingSet = res.next();
+
+			int i = 1;
+
+			// Add measure to observation
+			for (String meas : measures) {
+				String number = bindingSet.getValue("measure" + i).stringValue();
+				obs.putObservationValue(meas, number);
+				i++;
+			}
+
+			i = 1;
+
+			// Add dimension values to observation
+			for (String dim : visualDims) {
+				String value = bindingSet.getValue("dim" + i).stringValue();
+				obs.putObservationValue(dim, value);
+
+				i++;
+			}
+			observationList.addObservation(obs);
+		}
+		
+		//get the dimension values used by the cube observations 
+		Map<String, List<LDResource>> dimVals = observationList.getDimensionValuesWithLabels(visualDims,sparqlService);
 			
-			//Sort dimension values
-			for(String dim:dimVals.keySet()){
-				List<String> values=dimVals.get(dim);
-				Collections.sort(values);
-				dimVals.put(dim, values);				
+		String rowDim = visualDims.get(0);
+		String colDim = visualDims.get(1);
+		List<LDResource> rowDimValues = dimVals.get(rowDim);
+		List<LDResource> colDimValues = dimVals.get(colDim);
+		
+		Number[] listOfNumbers = new Number[rowDimValues.size()*colDimValues.size()];
+		//initialize list with empty values
+		for(int i=0;i<rowDimValues.size()*colDimValues.size();i++){
+			listOfNumbers[i]=null;
+		}
+		
+		for(Observation obs:observationList.getListOfObservations()){
+			LDResource obsRowVal =new LDResource( obs.getObservationValues().get(rowDim));
+			LDResource obsColVal = new LDResource(obs.getObservationValues().get(colDim));
+
+			//Row major order
+			int obsIndex=rowDimValues.indexOf(obsRowVal)*colDimValues.size()+colDimValues.indexOf(obsColVal);
+			for (String meas : measures) {
+				listOfNumbers[obsIndex]= Double.parseDouble(obs.getObservationValues().get(meas));
 			}
 			
-			String rowDim=visualDims.get(0);
-			String colDim=visualDims.get(1);
-			List<String> rowDimValues=dimVals.get(rowDim);
-			List<String> colDimValues=dimVals.get(colDim);
-					
-			int obsIndex=0;
-			//Order of observations are in row major order 
-			for(String rowVal:rowDimValues){
-				for(String colVal:colDimValues){
-					if(listOfObservations.size()>obsIndex){
-						Observation currentObs=listOfObservations.get(obsIndex);
-						String obsRowVal=currentObs.getObservationValues().get(rowDim);
-						String obsColVal=currentObs.getObservationValues().get(colDim);
-						if(rowVal.equals(obsRowVal)&&colVal.equals(obsColVal)){
-							for (String meas : measures) {
-								listOfNumbers.add(Double.parseDouble(currentObs.getObservationValues().get(meas)));
-							}	
-							obsIndex++;
-						}else{
-							for (String meas : measures) {
-								listOfNumbers.add(null);
-							}
-						}		
-					}else{
-						for (String meas : measures) {
-							listOfNumbers.add(null);
-							
-						}
-					}								
-				}
-			}
-			
-			qbt.setMeasures(listOfNumbers);
-			qbt.setDimVals(dimVals);
-			
-		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
 		}
 
+		qbt.setMeasures(Arrays.asList(listOfNumbers));
+		qbt.setDimVals(dimVals);
 		return qbt;
-
 	}
-	
-	
-	
-	public static List<Observation> toObservationList(TupleQueryResult res, Map<String,String> mapVariableNameURI) {
 
-	//	List<Map<String,String>> listOfObservations =new ArrayList<Map<String,String>>();
-		List<Observation> listOfObservations=new ArrayList<Observation>();
-		try {
-			while (res.hasNext()) {
-				BindingSet bindingSet = res.next();
-				Observation obs=new Observation();
-				for(String varName:mapVariableNameURI.keySet()){
-					String value=bindingSet.getValue(varName).stringValue();
-						obs.putObservationValue(mapVariableNameURI.get(varName), value);						
-				}
-				
-				listOfObservations.add(obs);
-				
-			}
-		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
+	public static List<Observation> toObservationList(TupleQueryResult res, Map<String, String> mapVariableNameURI) {
+
+		List<Observation> listOfObservations = new ArrayList<>();
+		while (res.hasNext()) {
+			BindingSet bindingSet = res.next();
+			Observation obs = new Observation();
+			for (Map.Entry<String, String> entry : mapVariableNameURI.entrySet()) {
+				String value = bindingSet.getValue(entry.getKey()).stringValue();
+				obs.putObservationValue(entry.getValue(), value);
+			}			
+	
+			listOfObservations.add(obs);
 		}
-
 		return listOfObservations;
 	}
-	
-	
-	public static LDResource toLDResource(String resURI,TupleQueryResult res) {
+
+	public static LDResource toLDResource(String resURI, TupleQueryResult res) {
 		LDResource ldr = new LDResource(resURI);
 		while (res.hasNext()) {
 			BindingSet bindingSet = res.next();
-			ldr.addLabel((Literal) bindingSet.getValue("label"));
-			
+			if(bindingSet.getValue("label")!=null){
+				ldr.addLabel((Literal) bindingSet.getValue("label"));
+			}
 
 		}
 		return ldr;
-	}	
+	}
+	
+	
+	public static DataCube toDataCube(String cubeURI, TupleQueryResult res) {
+		DataCube qb = new DataCube(cubeURI);
+		while (res.hasNext()) {
+			BindingSet bindingSet = res.next();
+			
+			if(bindingSet.getValue("label")!=null){
+				Label label=new Label((Literal) bindingSet.getValue("label"));
+				if(!qb.getLabels().contains(label)){
+					qb.addLabel(label);
+				}
+			}
+			
+			if(bindingSet.getValue("title")!=null){
+				Label title=new Label((Literal) bindingSet.getValue("title"));
+				if(!qb.getTitles().contains(title)){
+					qb.addTitle(title);
+				}				
+			}
+			
+			if(bindingSet.getValue("description")!=null){
+				Label description=new Label((Literal) bindingSet.getValue("description"));
+				if(!qb.getDesctiptions().contains(description)){
+					qb.addDescription(description);
+				}			
+			}
+			
+			if(bindingSet.getValue("comment")!=null){
+				Label comment=new Label((Literal) bindingSet.getValue("comment"));
+				if(!qb.getComments().contains(comment)){
+					qb.addComment(comment);
+				}				
+			}
+			
+			if(bindingSet.getValue("issued")!=null){
+				qb.setIssued(bindingSet.getValue("issued").stringValue());
+			}
+			
+			if(bindingSet.getValue("modified")!=null){
+				qb.setModified(bindingSet.getValue("modified").stringValue());
+			}
+			
+			if(bindingSet.getValue("subject")!=null){
+				String subject= bindingSet.getValue("subject").stringValue();
+				if(!qb.getSubjects().contains(subject)){
+					qb.addSubject(subject);
+				}				
+			}
+			
+			if(bindingSet.getValue("publisher")!=null){
+				qb.setPublisher(bindingSet.getValue("publisher").stringValue());
+			}
+			
+			if(bindingSet.getValue("license")!=null){
+				qb.setLicense(bindingSet.getValue("license").stringValue());
+			}
+		}
+		return qb;
+	}
 }

@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 public class Observation {
 	
-	private Map<String,String> observationValues=new TreeMap<String,String>();
+	private Map<String,String> observationValues=new TreeMap<>();
 
 	public Map<String, String> getObservationValues() {
 		return observationValues;

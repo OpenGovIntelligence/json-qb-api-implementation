@@ -7,14 +7,16 @@ import java.util.Map;
 
 public class QBTable {
 	
-	List<Number> measures=new ArrayList<Number>();
-	Map<String,List<String>> dimVals=new HashMap<String,List<String>>();
+	List<Number> measures=new ArrayList<>();
+	
+	//Map dimension URI with the values of the dimension used at the QBTable
+	Map<String,List<LDResource>> dimVals=new HashMap<>();
 	
 	
-	public Map<String, List<String>> getDimVals() {
+	public Map<String, List<LDResource>> getDimVals() {
 		return dimVals;
 	}
-	public void setDimVals(Map<String, List<String>> dimVals) {
+	public void setDimVals(Map<String, List<LDResource>> dimVals) {
 		this.dimVals = dimVals;
 	}
 	public List<Number> getMeasures() {

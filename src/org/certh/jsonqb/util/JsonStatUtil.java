@@ -2,6 +2,11 @@ package org.certh.jsonqb.util;
 
 public class JsonStatUtil {
 	
+	private JsonStatUtil() {
+		 // Throw an exception if this ever *is* called
+	    throw new AssertionError("Instantiating utility class.");
+	}
+	
 	//Remove no needed information from serialization of no.ssb.jsonstat.v2.Dataset
 	public static String cleanJsonStat (String jsonStat){
 		String cleanJsonStat=jsonStat;
