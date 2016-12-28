@@ -2,7 +2,6 @@ package org.certh.jsonqb.api.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,24 +10,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.certh.jsonqb.api.RESTapi;
 import org.certh.jsonqb.core.CubeSPARQL;
 import org.certh.jsonqb.core.ExploreSPARQL;
-import org.certh.jsonqb.core.QueryExecutor;
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.DimensionValues;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Observation;
-import org.certh.jsonqb.datamodel.QBTable;
+import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.JsonStatUtil;
 import org.certh.jsonqb.util.PropertyFileReader;
 import org.certh.jsonqb.util.QueryParameters;
+import org.certh.jsonqb.util.SPARQLUtil;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
@@ -173,7 +170,7 @@ public class ImplRESTapi implements RESTapi {
 				sparqlservice);
 
 		DimensionValues jsonDimVal = new DimensionValues();
-		LDResource dimension = CubeSPARQL.getLabels(dimensionURI, sparqlservice);
+		LDResource dimension = SPARQLUtil.getLabels(dimensionURI, sparqlservice);
 		jsonDimVal.setDimension(dimension);
 		jsonDimVal.setValues(dimensionValues);
 		Gson g = new Gson();
@@ -301,7 +298,7 @@ public class ImplRESTapi implements RESTapi {
 			}
 		}
 
-		QBTable table = CubeSPARQL.getTable(visualDims, fixedDims, selectedMeasures, datasetURI, sparqlservice);
+		QBTableJsonStat table = CubeSPARQL.getTable(visualDims, fixedDims, selectedMeasures, datasetURI, sparqlservice);
 		Dataset.Builder jsonStatBuilder = Dataset.create();
 
 		for (String dim : visualDims) {
@@ -311,15 +308,11 @@ public class ImplRESTapi implements RESTapi {
 				dimURILabelMap.put(ldr.getURI(), ldr.getURIorLabel());			
 			}
 
-			LDResource dimLDR = CubeSPARQL.getLabels(dim, sparqlservice);
+			LDResource dimLDR = SPARQLUtil.getLabels(dim, sparqlservice);
 			jsonStatBuilder.withDimension(Dimension.create(dim).withLabel(dimLDR.getURIorLabel())
 					.withIndexedLabels(ImmutableMap.copyOf(dimURILabelMap)));
 	
-		}
-
-		// jsonStatBuilder.withDimension(Dimension.create("Measure")
-		// .withLabel("Measure")
-		// .withIndexedLabels(ImmutableMap.copyOf(measureURILabelMap)));
+		}		
 
 		Dataset jsonstatDataset = jsonStatBuilder.withValues(table.getMeasures()).build();
 		Gson g = new Gson();

@@ -9,8 +9,9 @@ import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Label;
 import org.certh.jsonqb.datamodel.Observation;
-import org.certh.jsonqb.datamodel.QBTable;
+import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.ObservationList;
+import org.certh.jsonqb.util.SPARQLUtil;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
@@ -24,13 +25,13 @@ public class SPARQLresultTransformer {
 
 	public static List<LDResource> toLDResourceList(TupleQueryResult res) {
 	
-		String positionVat = "position";
+		String positionVal = "position";
 		List<LDResource> listOfResources = new ArrayList<>();
 		while (res.hasNext()) {
 			BindingSet bindingSet = res.next();
 			LDResource ldr = new LDResource(bindingSet.getValue("res").stringValue());	
-			if (bindingSet.getValue(positionVat) != null) {
-				ldr.setOrder(Integer.valueOf(bindingSet.getValue(positionVat).stringValue()));
+			if (bindingSet.getValue(positionVal) != null) {
+				ldr.setOrder(Integer.valueOf(bindingSet.getValue(positionVal).stringValue()));
 			}
 			listOfResources.add(ldr);
 		}				
@@ -43,7 +44,7 @@ public class SPARQLresultTransformer {
 		
 		for(LDResource ldr: listOfResources){
 			if (ldr.getLabels().isEmpty()){
-				LDResource labeledLdr=CubeSPARQL.getLabels(ldr.getURI(), sparqlService);
+				LDResource labeledLdr=SPARQLUtil.getLabels(ldr.getURI(), sparqlService);
 				listofLabeledLDResourceList.add(labeledLdr);
 			}
 		}
@@ -68,25 +69,23 @@ public class SPARQLresultTransformer {
 		List<Number> listOfNumbers = new ArrayList<>();
 		while (res.hasNext()) {
 			BindingSet bindingSet = res.next();
-			int i = 1;
-			for (String meas : measures) {
+			for (int i=1;i<=measures.size();i++) {
 				String number = bindingSet.getValue("measure" + i).stringValue();
 				if (!"".equals(number)) {
 					listOfNumbers.add(Double.parseDouble(number));
-				}
-				i++;
+				}				
 			}
 		}
 		return listOfNumbers;
 
 	}
 
-	public static QBTable toQBTable(TupleQueryResult res, List<String> measures, List<String> visualDims,
+	public static QBTableJsonStat toQBTable(TupleQueryResult res, List<String> measures, List<String> visualDims,
 			String sparqlService) {
 		
 		ObservationList observationList =new ObservationList();
 		
-		QBTable qbt = new QBTable();
+		QBTableJsonStat qbt = new QBTableJsonStat();
 
 		// create a list of observations
 		while (res.hasNext()) {

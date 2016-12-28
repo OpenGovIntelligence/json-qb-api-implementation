@@ -18,7 +18,7 @@ import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
 public class QueryExecutor {
 	
 	private static final Logger LOGGER = Logger.getLogger(QueryExecutor.class.getName());
-	
+
 	private QueryExecutor() {
 		 // Throw an exception if this ever *is* called
 	    throw new AssertionError("Instantiating utility class.");
@@ -50,10 +50,10 @@ public class QueryExecutor {
 		repo.initialize();
 		RepositoryConnection con = repo.getConnection();		
 		BooleanQuery booleanQuery = con.prepareBooleanQuery(QueryLanguage.SPARQL, queryString);
-
+		
 		boolean result = false;
 		try {
-			result = booleanQuery.evaluate();
+			result = booleanQuery.evaluate();			
 		} catch (RepositoryException|MalformedQueryException|QueryEvaluationException e) {
 			LOGGER.log( Level.SEVERE, e.toString(), e);
 		} 

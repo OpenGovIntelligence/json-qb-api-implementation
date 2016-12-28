@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.certh.jsonqb.core.CubeSPARQL;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Observation;
 
@@ -74,7 +73,7 @@ public class ObservationList {
 			List<LDResource> valsWithLabels = new ArrayList<>();
 			
 			for(String val:values){
-				LDResource ldr = CubeSPARQL.getLabels(val, sparqlService);
+				LDResource ldr = SPARQLUtil.getLabels(val, sparqlService);
 				valsWithLabels.add(ldr);
 			}
 			Collections.sort(valsWithLabels,LDResource.labelComparator);

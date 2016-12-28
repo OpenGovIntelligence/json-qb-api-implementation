@@ -8,12 +8,6 @@ import org.eclipse.rdf4j.query.TupleQueryResult;
 
 public class ExploreSPARQL {
 	
-	private static String prefix="PREFIX qb: <http://purl.org/linked-data/cube#>"
-			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-			+ "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>"
-			+ "PREFIX xkos: <http://rdf-vocabulary.ddialliance.org/xkos#>"
-			+ "PREFIX opencube: <http://opencube-project.eu/> ";
-	
 	private ExploreSPARQL() {
 		 // Throw an exception if this ever *is* called
 	    throw new AssertionError("Instantiating utility class.");
@@ -23,7 +17,7 @@ public class ExploreSPARQL {
 	// Input: The SPARQLservice
 	public static List<LDResource> getAllCubes(String sparqlService) {
 
-		String getCubesQuery = prefix
+		String getCubesQuery = SPARQLconstants.PREFIX
 				+ "select  distinct ?res where {"
 				+ "?res rdf:type qb:DataSet }";
 		TupleQueryResult res = QueryExecutor.executeSelect(getCubesQuery, sparqlService);
@@ -40,7 +34,7 @@ public class ExploreSPARQL {
 	// Input: The SPARQLservice
 	public static List<LDResource> getMaxAggregationSetCubes(String sparqlService) {
 
-		String getmaxCubesQuery = prefix
+		String getmaxCubesQuery = SPARQLconstants.PREFIX
 				//get the cube of the aggregation set that has the max dimension count
 				+ "select ?res where{"
 				+ "	?res qb:aggregationSet|opencube:aggregationSet ?aggset."
@@ -75,7 +69,7 @@ public class ExploreSPARQL {
 	// Input: The SPARQLservice
 	public static List<LDResource> getMaxAggregationSetCubesAndCubesWithoutAggregation(String sparqlService) {
 			
-		String getCubesQuery = prefix
+		String getCubesQuery = SPARQLconstants.PREFIX
 				+ "select distinct ?res where{"
 				//get all cubes that do not have an aggregation set
 				+ "	{?res rdf:type qb:DataSet."
@@ -113,7 +107,7 @@ public class ExploreSPARQL {
 	//Needed by aggregator in order to compute the aggregations
 	public static List<LDResource> getCubesWithNoAggregationSet(String sparqlService){
 		
-		String getCubesWithNoAggregationSetQuery=	prefix+
+		String getCubesWithNoAggregationSetQuery= SPARQLconstants.PREFIX+
 				"select ?res  where {" +
 				"{?res rdf:type qb:DataSet.} " +
 				"MINUS{?res opencube:aggregationSet ?set}}";
@@ -131,7 +125,7 @@ public class ExploreSPARQL {
 	public static LDResource getCubeOfAggregationSet(String aggregationSetURI,
 			List<String> dimensions, String sparqlService){
 				
-		StringBuilder getCubeOfAggregationSetQuery =new StringBuilder(prefix);
+		StringBuilder getCubeOfAggregationSetQuery =new StringBuilder(SPARQLconstants.PREFIX);
 		getCubeOfAggregationSetQuery.append("select  distinct ?res where {" 
 				+ "?res opencube:aggregationSet ?set."
 				+ "?res qb:structure ?dsd." 
@@ -153,7 +147,12 @@ public class ExploreSPARQL {
 				sparqlService);
 
 		List<LDResource> cubeOfAggregationSet = SPARQLresultTransformer.toLDResourceListWithLabels(res, sparqlService);
-		return cubeOfAggregationSet.get(0);		
+		if (!cubeOfAggregationSet.isEmpty()){
+			return cubeOfAggregationSet.get(0);
+		}else{
+			return null;
+		}
+		
 				
 		
 	}

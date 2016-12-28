@@ -9,7 +9,7 @@ public class LDResource implements Comparable<LDResource> {
 	
 	private String URI;
 	private List<Label> labels=new ArrayList<>();
-	private int order;
+	private int order=-1;
 	
 	//Comparator that compares LDResource by their label
 	public static final Comparator<LDResource> labelComparator =

@@ -10,11 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.certh.jsonqb.core.CubeSPARQL;
-import org.certh.jsonqb.core.ExploreSPARQL;
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Observation;
-import org.certh.jsonqb.datamodel.QBTable;
+import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.PropertyFileReader;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +32,7 @@ public class TestCubeSPARQL {
 			e.printStackTrace();
 		}		
     }
-	
-
-	 @Test
-	 public void testGetCubes() {
-		 List<LDResource> cubes= ExploreSPARQL.getAllCubes(SPARQLservice); 
-		 assertEquals(230,cubes.size());
-	 }	  
-	 
+		 
 	 @Test
 	 public void testGetDataCubeMetadata() {
 		 String dataCubeURI="http://id.vlaanderen.be/statistieken/dq/kubus-arbeidsmarkt-swse#id";
@@ -129,7 +121,7 @@ public class TestCubeSPARQL {
 		 selectedMeasures.add("http://id.vlaanderen.be/statistieken/def#aantalnwwz");
 		 
 		 
-		 QBTable table= CubeSPARQL.getTable(
+		 QBTableJsonStat table= CubeSPARQL.getTable(
 				 visualDims, fixedDims, selectedMeasures, dataCubeURI, SPARQLservice); 
 		 
 		 assertEquals(42,table.getMeasures().size());
