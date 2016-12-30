@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Observation;
+import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.SPARQLUtil;
 import org.eclipse.rdf4j.query.TupleQueryResult;
@@ -227,7 +228,7 @@ public class CubeSPARQL {
 		return SPARQLresultTransformer.toObservationList(res, mapVariableNameURI);
 	}
 	
-	public static QBTableJsonStat getTable(List<String> visualDims, Map<String, String> fixedDims,
+	public static QBTableJsonStat getJsonStatTable(List<String> visualDims, Map<String, String> fixedDims,
 			List<String> selectedMeasures, String cubeURI, String sparqlService) {
 		
 		StringBuilder getTableQuery=new StringBuilder(SPARQLconstants.PREFIX);
@@ -279,7 +280,63 @@ public class CubeSPARQL {
 		getTableQuery.append("}");
 		
 		TupleQueryResult res = QueryExecutor.executeSelect(getTableQuery.toString(), sparqlService);
-		return SPARQLresultTransformer.toQBTable(res, selectedMeasures, visualDims,sparqlService);	
+		return SPARQLresultTransformer.toQBJsonStatTable(res, selectedMeasures, visualDims,sparqlService);	
+
+	}
+	
+	public static QBTable getTable(List<String> visualDims, Map<String, String> fixedDims,
+			List<String> selectedMeasures, String cubeURI, String sparqlService) {
+		
+		StringBuilder getTableQuery=new StringBuilder(SPARQLconstants.PREFIX);
+		
+		getTableQuery.append("Select distinct ");
+		
+		
+		//Ádd visual dims to SPARQL query
+		for (int j=1;j<=visualDims.size();j++) {
+			getTableQuery.append("?dim" + j + " ");			
+		}		
+
+	    // Add measures ?meas to SPARQL query
+		for (int j=1;j<=selectedMeasures.size();j++) {
+			getTableQuery.append("?measure" + j + " ");			
+		}
+
+		// Select observations of a specific cube (cubeURI)
+		getTableQuery.append(" where {" + "?obs qb:dataSet <" + cubeURI + ">.");
+
+		// Add fixed dimensions to where clause
+		int i = 1;
+		
+		for (Map.Entry<String, String> entry : fixedDims.entrySet()) {
+			getTableQuery.append("?obs <" + entry.getKey() + "> ");
+			if (entry.getValue().contains("http")) {
+				getTableQuery.append("<" + entry.getValue() + ">.");
+			} else {
+				getTableQuery.append("?value" + i + "." + "FILTER(STR(?value" + i + ")='" + entry.getValue() + "')");
+			}
+			i++;
+		}		
+		
+
+		i = 1;
+		
+		// Add free dimensions to where clause
+		for (String vDim : visualDims) {
+			getTableQuery.append("?obs <" + vDim + "> " + "?dim" + i + ". ");
+			i++;
+		}
+
+		i = 1;
+		for (String meas : selectedMeasures) {
+			getTableQuery.append("?obs  <" + meas + "> ?measure" + i + ".");
+			i++;
+		}
+
+		getTableQuery.append("}");
+		
+		TupleQueryResult res = QueryExecutor.executeSelect(getTableQuery.toString(), sparqlService);
+		return SPARQLresultTransformer.toQBTable(res, selectedMeasures, visualDims,fixedDims,sparqlService);	
 
 	}
 }

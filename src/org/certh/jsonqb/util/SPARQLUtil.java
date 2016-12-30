@@ -36,7 +36,7 @@ public class SPARQLUtil {
 					
 		//Check if the AggregationSet URI already exists
 		while(uriExist){
-			long rnd = Math.abs(rand.nextLong());
+			long rnd = rand.nextLong();
 			createdURI = uriPrefix+"_"+ rnd;
 			String askURIExist= SPARQLconstants.PREFIX 
 					+ "ASK "

@@ -19,8 +19,13 @@ import org.certh.jsonqb.core.ExploreSPARQL;
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.DimensionValues;
 import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.LockedDimension;
 import org.certh.jsonqb.datamodel.Observation;
+import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
+import org.certh.jsonqb.serialize.LDResourceSerializer;
+import org.certh.jsonqb.serialize.LockedDimensionSerializer;
+import org.certh.jsonqb.serialize.QBTableSerializer;
 import org.certh.jsonqb.util.JsonStatUtil;
 import org.certh.jsonqb.util.PropertyFileReader;
 import org.certh.jsonqb.util.QueryParameters;
@@ -28,6 +33,7 @@ import org.certh.jsonqb.util.SPARQLUtil;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import no.ssb.jsonstat.v2.Dataset;
 import no.ssb.jsonstat.v2.Dimension;
@@ -257,7 +263,7 @@ public class ImplRESTapi implements RESTapi {
 	}
 
 	@Override
-	public Response getTable(UriInfo info) {
+	public Response getJsonStatTable(UriInfo info) {
 		PropertyFileReader pfr = new PropertyFileReader();
 		String sparqlservice;
 	
@@ -271,14 +277,14 @@ public class ImplRESTapi implements RESTapi {
 		QueryParameters qp=new QueryParameters(info.getQueryParameters());
 				
 		String datasetURI=qp.getDatasetURI();
-		String rowDimensionURI = qp.getRowDimensionURI();
-		String columnDimensionURI =qp.getColumnDimensionURI();
+		String rowDimensionURIs = qp.getRowDimensionURI();
+		String columnDimensionURIs =qp.getColumnDimensionURI();
 		String measure = qp.getMeasureURI();		
 		Map<String, String> fixedDims = qp.getFixedDims();		
 
 		List<String> visualDims = new ArrayList<>();
-		visualDims.add(rowDimensionURI);
-		visualDims.add(columnDimensionURI);
+		visualDims.add(rowDimensionURIs);
+		visualDims.add(columnDimensionURIs);
 
 		List<String> selectedMeasures = new ArrayList<>();
 		List<LDResource> measures = CubeSPARQL.getDataCubeMeasures(datasetURI, sparqlservice);
@@ -298,7 +304,7 @@ public class ImplRESTapi implements RESTapi {
 			}
 		}
 
-		QBTableJsonStat table = CubeSPARQL.getTable(visualDims, fixedDims, selectedMeasures, datasetURI, sparqlservice);
+		QBTableJsonStat table = CubeSPARQL.getJsonStatTable(visualDims, fixedDims, selectedMeasures, datasetURI, sparqlservice);
 		Dataset.Builder jsonStatBuilder = Dataset.create();
 
 		for (String dim : visualDims) {
@@ -320,6 +326,65 @@ public class ImplRESTapi implements RESTapi {
 		jsonStat = JsonStatUtil.jsonStatAddClass(jsonStat);
 		return Response.ok(jsonStat).header(allowOrigin, "*").build();
 
+	}
+
+	@Override
+	public Response getTable(UriInfo info) {		
+		
+			PropertyFileReader pfr = new PropertyFileReader();
+			String sparqlservice;
+		
+			try {
+				sparqlservice = pfr.getSPARQLservice();
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, e.toString(), e);
+				return Response.serverError().build();
+			}
+
+			QueryParameters qp=new QueryParameters(info.getQueryParameters());
+					
+			String datasetURI=qp.getDatasetURI();
+			String rowDimensionURIs = qp.getRowDimensionURI();
+			String columnDimensionURIs =qp.getColumnDimensionURI();
+			String measure = qp.getMeasureURI();		
+			Map<String, String> fixedDims = qp.getFixedDims();		
+
+			List<String> visualDims = new ArrayList<>();
+			visualDims.add(rowDimensionURIs);
+			visualDims.add(columnDimensionURIs);
+
+			List<String> selectedMeasures = new ArrayList<>();
+			List<LDResource> measures = CubeSPARQL.getDataCubeMeasures(datasetURI, sparqlservice);
+
+			Map<String, String> measureURILabelMap = new TreeMap<>();
+			for (LDResource meas : measures) {
+				// if there is a selected measure
+				if (!"".equals(measure)) {
+					if (meas.getURI().equals(measure)) {
+						selectedMeasures.add(meas.getURI());
+						measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
+					}
+				// if there is no selected measure, assume all measures are selected
+				} else {
+					selectedMeasures.add(meas.getURI());
+					measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
+				}
+			}
+
+			QBTable table = CubeSPARQL.getTable(visualDims, fixedDims, selectedMeasures, datasetURI, sparqlservice);
+			
+			//Create GsonBuilder
+			GsonBuilder gsonBuilder = new GsonBuilder();
+		    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+		    gsonBuilder.registerTypeAdapter(LockedDimension.class, new LockedDimensionSerializer());
+		    gsonBuilder.registerTypeAdapter(QBTable.class, new QBTableSerializer());
+		    
+		    Gson gson = gsonBuilder.create();	   
+		    
+		    // Format to JSON
+		    String json = gson.toJson(table);
+		    return Response.ok(json).header(allowOrigin, "*").build();
+			
 	}
 
 	

@@ -2,13 +2,17 @@ package org.certh.jsonqb.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.analysis.util.CharArrayMap.EntrySet;
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Label;
+import org.certh.jsonqb.datamodel.LockedDimension;
 import org.certh.jsonqb.datamodel.Observation;
+import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.ObservationList;
 import org.certh.jsonqb.util.SPARQLUtil;
@@ -80,7 +84,8 @@ public class SPARQLresultTransformer {
 
 	}
 
-	public static QBTableJsonStat toQBTable(TupleQueryResult res, List<String> measures, List<String> visualDims,
+	//NEED TO SUPPORT MULTIPLE MEASURE
+	public static QBTableJsonStat toQBJsonStatTable(TupleQueryResult res, List<String> measures, List<String> visualDims,
 			String sparqlService) {
 		
 		ObservationList observationList =new ObservationList();
@@ -133,6 +138,8 @@ public class SPARQLresultTransformer {
 
 			//Row major order
 			int obsIndex=rowDimValues.indexOf(obsRowVal)*colDimValues.size()+colDimValues.indexOf(obsColVal);
+			
+			//NEED TO SUPPORT MULTIPLE MEASURES
 			for (String meas : measures) {
 				listOfNumbers[obsIndex]= Double.parseDouble(obs.getObservationValues().get(meas));
 			}
@@ -143,6 +150,100 @@ public class SPARQLresultTransformer {
 		qbt.setDimVals(dimVals);
 		return qbt;
 	}
+	
+	//NEED TO SUPPORT MULTIPLE MEASURE
+	public static QBTable toQBTable(TupleQueryResult res, List<String> measures,
+			List<String> visualDims,Map<String, String> fixedDims,	String sparqlService) {
+			
+			List<LDResource> visualDimsLD=new ArrayList<>();
+			for(String vDim:visualDims){
+				visualDimsLD.add(SPARQLUtil.getLabels(vDim, sparqlService));
+			}
+			
+			List<LockedDimension> lockedDims=new ArrayList<>();
+			for(String fDim:fixedDims.keySet()){
+				String fDimVal=fixedDims.get(fDim);
+				LDResource ldr=SPARQLUtil.getLabels(fDim, sparqlService);
+				LockedDimension lock=new LockedDimension(fDim);
+				lock.setLabels(ldr.getLabels());
+				lock.setLockedValue(SPARQLUtil.getLabels(fDimVal, sparqlService));
+				lockedDims.add(lock);
+			}
+		
+			ObservationList observationList =new ObservationList();
+			
+			QBTable qbt = new QBTable();
+
+			// create a list of observations
+			while (res.hasNext()) {
+				Observation obs = new Observation();
+				BindingSet bindingSet = res.next();
+
+				int i = 1;
+
+				// Add measure to observation
+				for (String meas : measures) {
+					String number = bindingSet.getValue("measure" + i).stringValue();
+					obs.putObservationValue(meas, number);
+					i++;
+				}
+
+				i = 1;
+
+				// Add dimension values to observation
+				for (String dim : visualDims) {
+					String value = bindingSet.getValue("dim" + i).stringValue();
+					obs.putObservationValue(dim, value);
+
+					i++;
+				}
+				observationList.addObservation(obs);
+			}
+			
+			//get the dimension values used by the cube observations 
+			Map<String, List<LDResource>> dimVals = observationList.getDimensionValuesWithLabels(visualDims,sparqlService);
+				
+			String rowDim = visualDims.get(0);
+			String colDim = visualDims.get(1);
+			List<LDResource> rowDimValues = dimVals.get(rowDim);
+			List<LDResource> colDimValues = dimVals.get(colDim);
+			
+			Number[] listOfNumbers = new Number[rowDimValues.size()*colDimValues.size()];
+			//initialize list with empty values
+			for(int i=0;i<rowDimValues.size()*colDimValues.size();i++){
+				listOfNumbers[i]=null;
+			}
+			
+			for(Observation obs:observationList.getListOfObservations()){
+				LDResource obsRowVal =new LDResource( obs.getObservationValues().get(rowDim));
+				LDResource obsColVal = new LDResource(obs.getObservationValues().get(colDim));
+
+				//Row major order
+				int obsIndex=rowDimValues.indexOf(obsRowVal)*colDimValues.size()+colDimValues.indexOf(obsColVal);
+				
+				//NEED TO SUPPORT MULTIPLE MEASURES
+				for (String meas : measures) {
+					listOfNumbers[obsIndex]= Double.parseDouble(obs.getObservationValues().get(meas));
+				}
+				
+			}	
+			
+			Map<LDResource, List<LDResource>> dimValsLDR=new HashMap<>();
+			
+			for(String dim: dimVals.keySet()){
+				LDResource dimLDR=SPARQLUtil.getLabels(dim, sparqlService);
+				dimValsLDR.put(dimLDR, dimVals.get(dim));
+			}
+			
+			qbt.setData(Arrays.asList(listOfNumbers));	
+			qbt.setFreeDimensions(visualDimsLD);
+			qbt.addColumn(visualDimsLD.get(1));
+			qbt.addRow(visualDimsLD.get(0));
+			qbt.setLockedDimensions(lockedDims);
+			qbt.setDimensionValues(dimValsLDR);
+			return qbt;
+		}
+	
 
 	public static List<Observation> toObservationList(TupleQueryResult res, Map<String, String> mapVariableNameURI) {
 

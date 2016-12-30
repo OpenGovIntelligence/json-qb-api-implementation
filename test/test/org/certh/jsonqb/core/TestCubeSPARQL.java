@@ -121,8 +121,8 @@ public class TestCubeSPARQL {
 		 selectedMeasures.add("http://id.vlaanderen.be/statistieken/def#aantalnwwz");
 		 
 		 
-		 QBTableJsonStat table= CubeSPARQL.getTable(
-				 visualDims, fixedDims, selectedMeasures, dataCubeURI, SPARQLservice); 
+		 QBTableJsonStat table= CubeSPARQL.getJsonStatTable(visualDims, 
+				 fixedDims, selectedMeasures, dataCubeURI, SPARQLservice); 
 		 
 		 assertEquals(42,table.getMeasures().size());
 		 assertEquals(21,table.getDimVals().get(dim1).size());

@@ -64,6 +64,11 @@ public interface RESTapi {
 	
 	@GET
 	@Produces("application/json")
+	@Path("/jsonstat-table")
+	public Response getJsonStatTable(@Context UriInfo info);
+	
+	@GET
+	@Produces("application/json")
 	@Path("/table")
 	public Response getTable(@Context UriInfo info);
 	
