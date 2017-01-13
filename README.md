@@ -140,31 +140,25 @@ Example result
       "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000005",
       "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
       "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "79.1",
-      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
     },
     {
       "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000006",
       "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
       "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "84.8",
-      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000006/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000006/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
     },
     {
       "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000008",
       "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
       "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "78.2",
-      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000008/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000008/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
     },
     {
       "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000010",
       "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
       "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "77.9",
-      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000010/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
-    },
-    {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000011",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "84.8",
-      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000011/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000010/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
     },...
   ]
 }
