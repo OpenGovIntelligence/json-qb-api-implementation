@@ -32,7 +32,7 @@ public class ListSerializer implements JsonSerializer<List<LDResource>> {
 		}		
 		
 		jsonObject.add(myClass, listOfElements);		
-		return jsonObject;
+		return jsonObject; 
 	}
 	
 }
