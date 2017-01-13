@@ -15,20 +15,22 @@ Example request:
 Example result
 
 ```
-[
-  {
-    "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs#id",
-    "label": "Cube average price real estate"
-  },
-  {
-    "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs-1993#id",
-    "label": "Cube average price real estate (1993-2013)"
-  },
-  {
-    "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen#id",
-    "label": "Cube building permits"
-  },...
- ]
+{
+  "cubes": [
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs#id",
+      "label": "Cube average price real estate"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs-1993#id",
+      "label": "Cube average price real estate (1993-2013)"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen#id",
+      "label": "Cube building permits"
+    },...
+  ]
+ }
 ```
 
 ### GET dimensions
@@ -42,24 +44,26 @@ Example request:
 Example result
 
 ```
-[
-  {
-    "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
-    "label": "Age group"
-  },
-  {
-    "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
-    "label": "Geslacht"
-  },
-  {
-    "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-    "label": "Period of time"
-  },
-  {
-    "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-    "label": "Reference Area"
-  }
-]
+{
+  "dimensions": [
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
+      "label": "Age group"
+    },
+    {
+      "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
+      "label": "Geslacht"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
+      "label": "Period of time"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
+      "label": "Reference Area"
+    }
+  ]
+}
 ```
 
 ### GET measures
@@ -73,12 +77,14 @@ Example request:
 Example result
 
 ```
-[
-  {
-    "@id": "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad",
-    "label": "aantal werkzaamheidsgraad"
-  }
-]
+{
+  "measures": [
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad",
+      "label": "aantal werkzaamheidsgraad"
+    }
+  ]
+}
 ```
 
 ### GET dimension-values
@@ -109,12 +115,13 @@ Example result
     {
       "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2011#id",
       "label": "2011"
-    }
+    }, ...
   ],
   "dimension": {
     "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
     "label": "Period of time"
   }
+}
 }
 ```
 ### GET slice
@@ -124,37 +131,44 @@ Parameter: row (required), col (required), measure (required), 0 or more fixed d
 
 Example request
 
-`http://localhost:8080/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col=http://id.vlaanderen.be/statistieken/def%23refArea&row=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id`
+`GET http://localhost:8080/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col=http://id.vlaanderen.be/statistieken/def%23refArea&row=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id`
 
 Example result
 ```
 {
-  "listOfObservations": [
+  "observations": [
     {
-      "observationValues": {
-        "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000005",
-        "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-        "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "79.1",
-        "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
-      }
+      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000005",
+      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
+      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "79.1",
+      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
     },
     {
-      "observationValues": {
-        "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000006",
-        "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-        "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "84.8",
-        "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000006/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
-      }
+      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000006",
+      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
+      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "84.8",
+      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000006/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
     },
     {
-      "observationValues": {
-        "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000008",
-        "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-        "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "78.2",
-        "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000008/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
-      }
+      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000008",
+      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
+      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "78.2",
+      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000008/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+    },
+    {
+      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000010",
+      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
+      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "77.9",
+      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000010/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+    },
+    {
+      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000011",
+      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
+      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "84.8",
+      "id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000011/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
     },...
   ]
+}
 ```
 
 ### GET table
