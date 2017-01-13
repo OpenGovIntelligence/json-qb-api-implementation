@@ -341,6 +341,7 @@ public class AggregateSPARQL {
 		
 	}
 	
+	//TO DO SUPPORT MULTIPLE ROLLUP DIMENSIONS
 	private static TupleQueryResult getAggregatedRollUpObservations(String cubeURI,
 			Map<String, AggregationFunctions> mapMeasureOperation, String sparqlService){
 		

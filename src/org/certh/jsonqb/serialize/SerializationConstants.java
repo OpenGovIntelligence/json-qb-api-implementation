@@ -40,6 +40,21 @@ public class SerializationConstants {
 	
 	public static final String ORDER="order";	
 	
+	
+	//*** LISTS ***//
+	
+	public static final String CUBES="cubes";
+	
+	public static final String DIMENSIONS="dimensions";
+	
+	public static final String ATTRIBUTES="attributes";
+	
+	public static final String MEASURES="measures";
+	
+	public static final String VALUES="values";
+	
+	public static final String OBSERVATIONS="observations";
+	
 	private SerializationConstants() {
 		 // Throw an exception if this ever *is* called
 	    throw new AssertionError("Instantiating utility class.");

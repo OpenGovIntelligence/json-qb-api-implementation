@@ -14,6 +14,7 @@ import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
+import org.certh.jsonqb.util.ObservationList;
 import org.certh.jsonqb.util.PropertyFileReader;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,10 +98,10 @@ public class TestCubeSPARQL {
 		 selectedMeasures.add("http://id.vlaanderen.be/statistieken/def#aantalnwwz");
 		 
 		 
-		 List<Observation> observations= CubeSPARQL.getSlice(
+		 ObservationList observations= CubeSPARQL.getSlice(
 				 visualDims, fixedDims, selectedMeasures, dataCubeURI, SPARQLservice); 
 		 
-		 assertEquals(42,observations.size());
+		 assertEquals(42,observations.getListOfObservations().size());
 	 } 
 	 
 	 @Test

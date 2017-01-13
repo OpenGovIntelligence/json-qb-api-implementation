@@ -24,9 +24,14 @@ import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.serialize.LDResourceSerializer;
+import org.certh.jsonqb.serialize.ListSerializer;
 import org.certh.jsonqb.serialize.LockedDimensionSerializer;
+import org.certh.jsonqb.serialize.ObservationListSerializer;
+import org.certh.jsonqb.serialize.ObservationSerializer;
 import org.certh.jsonqb.serialize.QBTableSerializer;
+import org.certh.jsonqb.serialize.SerializationConstants;
 import org.certh.jsonqb.util.JsonStatUtil;
+import org.certh.jsonqb.util.ObservationList;
 import org.certh.jsonqb.util.PropertyFileReader;
 import org.certh.jsonqb.util.QueryParameters;
 import org.certh.jsonqb.util.SPARQLUtil;
@@ -34,6 +39,7 @@ import org.certh.jsonqb.util.SPARQLUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import no.ssb.jsonstat.v2.Dataset;
 import no.ssb.jsonstat.v2.Dimension;
@@ -55,10 +61,15 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> cubes = ExploreSPARQL.getAllCubes(sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(cubes);
-		return Response.ok(json).header(allowOrigin, "*").build();
-
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.CUBES));
+		gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    	   
+	    gsonBuilder.setPrettyPrinting();
+	    Gson gson = gsonBuilder.create();	   
+	    		    
+	    return Response.ok(gson.toJson(cubes)).header(allowOrigin, "*").build();
 	}
 
 	@Override
@@ -72,9 +83,17 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> cubes = ExploreSPARQL.getMaxAggregationSetCubes(sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(cubes);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.CUBES));
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    gsonBuilder.setPrettyPrinting();
+	    
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(cubes);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
@@ -89,9 +108,16 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> cubes = ExploreSPARQL.getMaxAggregationSetCubesAndCubesWithoutAggregation(sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(cubes);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.CUBES));
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    gsonBuilder.setPrettyPrinting();
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(cubes);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 	
@@ -122,9 +148,16 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> dimensions = CubeSPARQL.getDataCubeDimensions(datasetURI, sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(dimensions);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.DIMENSIONS));
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    gsonBuilder.setPrettyPrinting();
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(dimensions);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
@@ -139,9 +172,15 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> measures = CubeSPARQL.getDataCubeMeasures(datasetURI, sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(measures);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.MEASURES));
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    gsonBuilder.setPrettyPrinting();
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(measures);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
@@ -156,9 +195,17 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> attributes = CubeSPARQL.getDataCubeAttributes(datasetURI, sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(attributes);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.ATTRIBUTES));
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	   	    
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(attributes);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
@@ -179,9 +226,17 @@ public class ImplRESTapi implements RESTapi {
 		LDResource dimension = SPARQLUtil.getLabels(dimensionURI, sparqlservice);
 		jsonDimVal.setDimension(dimension);
 		jsonDimVal.setValues(dimensionValues);
-		Gson g = new Gson();
-		String json = g.toJson(jsonDimVal);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.VALUES));
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    gsonBuilder.setPrettyPrinting();
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(jsonDimVal);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
@@ -197,9 +252,14 @@ public class ImplRESTapi implements RESTapi {
 		}
 		List<LDResource> attributeValues = CubeSPARQL.getDimensionAttributeValues(attributeURI, datasetURI,
 				sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(attributeValues);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		GsonBuilder gsonBuilder = new GsonBuilder();
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	   	    
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(attributeValues);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
@@ -214,9 +274,15 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> dimensionLevels = CubeSPARQL.getCubeDimensionLevels(dimensionURI, datasetURI, sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(dimensionLevels);
-		return Response.ok(json).header(allowOrigin, "*").build();
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.VALUES));
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	   	    
+	    Gson gson = gsonBuilder.create();	   
+	    
+	    // Format to JSON
+	    String json = gson.toJson(dimensionLevels);
+	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
@@ -254,14 +320,24 @@ public class ImplRESTapi implements RESTapi {
 			}
 		}
 
-		List<Observation> slice = CubeSPARQL.getSlice(visualDims, fixedDims, selectedMeasures, datasetURI,
+		ObservationList slice = CubeSPARQL.getSlice(visualDims, fixedDims, selectedMeasures, datasetURI,
 				sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(slice);		
+		
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ObservationList.class, new ObservationListSerializer());
+	    gsonBuilder.registerTypeAdapter(Observation.class, new ObservationSerializer());
+	    gsonBuilder.setPrettyPrinting();
+		
+	    Gson gson = gsonBuilder.create();	
+		
+		String json = gson.toJson(slice);		
 		return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
 
+	//MERGE WITH getTable
+	//Take format as parameter = [jsonstat,jsonqb]
 	@Override
 	public Response getJsonStatTable(UriInfo info) {
 		PropertyFileReader pfr = new PropertyFileReader();
@@ -378,7 +454,7 @@ public class ImplRESTapi implements RESTapi {
 		    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
 		    gsonBuilder.registerTypeAdapter(LockedDimension.class, new LockedDimensionSerializer());
 		    gsonBuilder.registerTypeAdapter(QBTable.class, new QBTableSerializer());
-		    
+		    gsonBuilder.setPrettyPrinting();
 		    Gson gson = gsonBuilder.create();	   
 		    
 		    // Format to JSON

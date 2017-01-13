@@ -12,6 +12,7 @@ import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
+import org.certh.jsonqb.util.ObservationList;
 import org.certh.jsonqb.util.SPARQLUtil;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 
@@ -154,7 +155,7 @@ public class CubeSPARQL {
 	}	
 	
 
-	public static List<Observation> getSlice(List<String> visualDims, Map<String, String> fixedDims,
+	public static ObservationList getSlice(List<String> visualDims, Map<String, String> fixedDims,
 			List<String> selectedMeasures, String cubeURI, String sparqlService) {
 
 		Map<String, String> mapVariableNameURI = new HashMap<>();

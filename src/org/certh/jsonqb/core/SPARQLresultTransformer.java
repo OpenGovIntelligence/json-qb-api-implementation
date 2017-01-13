@@ -245,9 +245,9 @@ public class SPARQLresultTransformer {
 		}
 	
 
-	public static List<Observation> toObservationList(TupleQueryResult res, Map<String, String> mapVariableNameURI) {
+	public static ObservationList toObservationList(TupleQueryResult res, Map<String, String> mapVariableNameURI) {
 
-		List<Observation> listOfObservations = new ArrayList<>();
+		ObservationList listOfObservations = new ObservationList();
 		while (res.hasNext()) {
 			BindingSet bindingSet = res.next();
 			Observation obs = new Observation();
@@ -256,7 +256,7 @@ public class SPARQLresultTransformer {
 				obs.putObservationValue(entry.getValue(), value);
 			}			
 	
-			listOfObservations.add(obs);
+			listOfObservations.addObservation(obs);
 		}
 		return listOfObservations;
 	}

@@ -95,7 +95,14 @@ public class LDResource implements Comparable<LDResource> {
 	// Get the last part of the URI (either after last '#' or after last '/')
 	public String getLastPartOfURI()  {
 		if (URI.contains("#")) {
-			return URI.substring(URI.lastIndexOf('#') + 1, URI.length());
+			String val=URI.substring(URI.lastIndexOf('#') + 1, URI.length());
+			if("id".equals(val)){
+				
+				return URI.substring(URI.lastIndexOf('/') + 1, URI.lastIndexOf('#'));
+			}else{
+				return val;
+			}
+			
 		} else {
 			return URI.substring(URI.lastIndexOf('/') + 1, URI.length());
 		}
