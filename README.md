@@ -125,7 +125,7 @@ Example result
 ```
 ### GET slice
 
-Parameter: row (required), col (required), measure (required), 0 or more fixed dimension identifiers (optional)
+Parameter: dataset (required), measure (required), 0 or more fixed dimension identifiers (optional)
 
 
 Example request
@@ -172,7 +172,7 @@ Example result
 
 ### GET table
 
-Parameter: row (required), col (required), measure (required), 0 or more fixed dimension identifiers (optional)
+Parameter: dataset(required), row (required), col (required), measure (required), 0 or more fixed dimension identifiers (optional)
 
 
 Example request
