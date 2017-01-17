@@ -45,8 +45,9 @@ Example result
 
 ```
 {
+  "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment",
   "label": "Employment",
-  "description": "People are classed as \u0027in employment\u0027 (employee or self-employed) if they have done at least one hour of paid work in the week prior to their LFS interview. ... ",
+  "description": "People are classed as \u0027in employment\u0027 (employee or self-employed) if they have done at least one hour of paid work in the week prior to their LFS interview... ",
   "comment": "People are classed as \u0027in employment\u0027 (employee or self-employed) if they have done at least one hour of paid work in the week prior to their LFS interview",
   "issued": "2014-07-29T01:00:00Z",
   "modified": "2015-06-04T01:00:00Z",
