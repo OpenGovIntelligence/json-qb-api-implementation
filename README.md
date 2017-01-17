@@ -10,7 +10,7 @@ Parameter: none
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes [I'm an inline-style link](https://www.google.com)
+`GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes)
 
 `
 
