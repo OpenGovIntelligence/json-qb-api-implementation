@@ -40,7 +40,7 @@ Parameter: none
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes)
 
 Example result
 
@@ -69,7 +69,7 @@ Parameter: dataset (required)
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dataset-metadata?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dataset-metadata?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dataset-metadata?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
 
 Example result
 
