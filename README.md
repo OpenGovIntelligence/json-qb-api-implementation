@@ -33,6 +33,35 @@ Example result
 }
 ```
 
+### GET aggregationSetcubes
+
+Parameter: none
+
+Example request:
+
+`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes`
+
+Example result
+
+```
+{
+  "cubes": [
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs#id",
+      "label": "Cube average price real estate"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs-1993#id",
+      "label": "Cube average price real estate (1993-2013)"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen#id",
+      "label": "Cube building permits"
+    },...
+  ]
+}
+```
+
 ### GET dataset-metadata
 
 Parameter: dataset (required)
@@ -84,6 +113,27 @@ Example result
     {
       "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
       "label": "Reference Area"
+    }
+  ]
+}
+```
+
+### GET attributes
+
+Parameter: dataset (required)
+
+Example request:
+
+`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment`
+
+Example result
+
+```
+{
+  "attributes": [
+    {
+      "@id": "http://statistics.gov.scot/def/concept/measure-units/ratio",
+      "label": "ratio"
     }
   ]
 }
@@ -146,6 +196,69 @@ Example result
   }
 }
 ```
+
+### GET attribute-values
+
+Parameter: dataset (required), attribute (required)
+
+Example request:
+
+`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure`
+
+Example result
+
+```
+{
+  "values": [
+    {
+      "@id": "http://statistics.gov.scot/def/concept/measure-units/people",
+      "label": "people"
+    },
+    {
+      "@id": "http://statistics.gov.scot/def/concept/measure-units/percentage-of-population",
+      "label": "percentage-of-population"
+    }
+  ],
+  "dimension": {
+    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+    "label": "unitMeasure"
+  }
+}
+```
+
+
+### GET dimension-levels
+
+Parameter: dataset (required), dimension (required)
+
+Example request:
+
+`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23refArea`
+
+Example result
+
+```
+{
+  "values": [
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/province#id",
+      "label": "Provincie"
+    },
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/region#id",
+      "label": "Région"
+    }
+  ],
+  "dimension": {
+    "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
+    "label": "Reference Area"
+  }
+}
+```
+
+
+
+
 ### GET slice
 
 Parameter: dataset (required), measure (required), 0 or more fixed dimension identifiers (optional)
