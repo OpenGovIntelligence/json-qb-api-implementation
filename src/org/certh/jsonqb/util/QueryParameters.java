@@ -12,7 +12,7 @@ public class QueryParameters {
 	private String rowDimensionURI;
 	private String columnDimensionURI;
 	private String measureURI;
-	private Map<String, String> fixedDims = new HashMap<>();
+	private Map<String, String> fixedValues = new HashMap<>();
 
 	public QueryParameters(MultivaluedMap<String, String> parameters) {
 		datasetURI = parameters.getFirst("dataset");
@@ -21,7 +21,7 @@ public class QueryParameters {
 		measureURI = parameters.getFirst("measure");
 		for (String param : parameters.keySet()) {
 			if (!"dataset".equals(param) && !"col".equals(param) && !"row".equals(param) && !"measure".equals(param)) {
-				fixedDims.put(param, parameters.getFirst(param));
+				fixedValues.put(param, parameters.getFirst(param));
 			}
 		}
 	}
@@ -42,8 +42,8 @@ public class QueryParameters {
 		return columnDimensionURI;
 	}
 
-	public Map<String, String> getFixedDims() {
-		return fixedDims;
+	public Map<String, String> getFixedValues() {
+		return fixedValues;
 	}
 
 	

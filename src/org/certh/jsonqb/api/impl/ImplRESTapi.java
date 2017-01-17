@@ -2,9 +2,13 @@ package org.certh.jsonqb.api.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,8 +18,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.certh.jsonqb.api.RESTapi;
+import org.certh.jsonqb.core.AggregateSPARQL;
 import org.certh.jsonqb.core.CubeSPARQL;
 import org.certh.jsonqb.core.ExploreSPARQL;
+import org.certh.jsonqb.datamodel.AggregationFunctions;
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.DimensionValues;
 import org.certh.jsonqb.datamodel.LDResource;
@@ -23,6 +29,7 @@ import org.certh.jsonqb.datamodel.LockedDimension;
 import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
+import org.certh.jsonqb.serialize.DataCubeSerializer;
 import org.certh.jsonqb.serialize.LDResourceSerializer;
 import org.certh.jsonqb.serialize.ListSerializer;
 import org.certh.jsonqb.serialize.LockedDimensionSerializer;
@@ -32,14 +39,15 @@ import org.certh.jsonqb.serialize.QBTableSerializer;
 import org.certh.jsonqb.serialize.SerializationConstants;
 import org.certh.jsonqb.util.JsonStatUtil;
 import org.certh.jsonqb.util.ObservationList;
+import org.certh.jsonqb.util.OrderedPowerSet;
 import org.certh.jsonqb.util.PropertyFileReader;
 import org.certh.jsonqb.util.QueryParameters;
 import org.certh.jsonqb.util.SPARQLUtil;
+import org.certh.jsonqb.util.StringUtil;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 import no.ssb.jsonstat.v2.Dataset;
 import no.ssb.jsonstat.v2.Dimension;
@@ -132,8 +140,14 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		DataCube qb = CubeSPARQL.getCubeMetaData(datasetURI, sparqlservice);
-		Gson g = new Gson();
-		String json = g.toJson(qb);
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(DataCube.class, new DataCubeSerializer());
+	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    gsonBuilder.setPrettyPrinting();
+	    Gson gson = gsonBuilder.create();
+				
+		String json = gson.toJson(qb);
 		return Response.ok(json).header(allowOrigin, "*").build();
 	}
 
@@ -300,7 +314,7 @@ public class ImplRESTapi implements RESTapi {
 		QueryParameters qp=new QueryParameters(info.getQueryParameters());
 		String datasetURI = qp.getDatasetURI();
 		String measure = qp.getMeasureURI();
-		Map<String, String> fixedDims = qp.getFixedDims();
+		Map<String, String> fixedDims = qp.getFixedValues();
 		
 		List<LDResource> dimensions = CubeSPARQL.getDataCubeDimensions(datasetURI, sparqlservice);
 		List<String> visualDims = new ArrayList<>();
@@ -356,7 +370,7 @@ public class ImplRESTapi implements RESTapi {
 		String rowDimensionURIs = qp.getRowDimensionURI();
 		String columnDimensionURIs =qp.getColumnDimensionURI();
 		String measure = qp.getMeasureURI();		
-		Map<String, String> fixedDims = qp.getFixedDims();		
+		Map<String, String> fixedDims = qp.getFixedValues();		
 
 		List<String> visualDims = new ArrayList<>();
 		visualDims.add(rowDimensionURIs);
@@ -423,7 +437,7 @@ public class ImplRESTapi implements RESTapi {
 			String rowDimensionURIs = qp.getRowDimensionURI();
 			String columnDimensionURIs =qp.getColumnDimensionURI();
 			String measure = qp.getMeasureURI();		
-			Map<String, String> fixedDims = qp.getFixedDims();		
+			Map<String, String> fixedDims = qp.getFixedValues();		
 
 			List<String> visualDims = new ArrayList<>();
 			visualDims.add(rowDimensionURIs);
@@ -461,6 +475,61 @@ public class ImplRESTapi implements RESTapi {
 		    String json = gson.toJson(table);
 		    return Response.ok(json).header(allowOrigin, "*").build();
 			
+	}
+
+	@Override
+	public Response createAggregations(UriInfo info) {
+		PropertyFileReader pfr = new PropertyFileReader();
+		String sparqlservice;
+	
+		try {
+			sparqlservice = pfr.getSPARQLservice();
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, e.toString(), e);
+			return Response.serverError().build();
+		}
+		
+		
+		QueryParameters qp=new QueryParameters(info.getQueryParameters());
+		
+		String datasetURI=qp.getDatasetURI();
+		Map<String, String> tempMapMeasureToAggregationFunction = qp.getFixedValues();	
+		
+		
+		Map<String, AggregationFunctions> mapMeasureToAggregationFunction=new HashMap<>();
+		for(Entry<String, String> entry:tempMapMeasureToAggregationFunction.entrySet()){
+			mapMeasureToAggregationFunction.put(entry.getKey(), AggregationFunctions.valueOf(entry.getValue()));
+		}
+		
+		
+		List<LDResource> cubeDimensions=CubeSPARQL.getDataCubeDimensions(datasetURI, sparqlservice);
+		LDResource cubeGraph=CubeSPARQL.getCubeGraph(datasetURI, sparqlservice);
+		// Create new aggregation set
+		String aggregationSetURI = AggregateSPARQL.createNewAggregationSet(
+				cubeGraph.getURI(),sparqlservice);
+
+		// Attach original cube to aggregation set
+		AggregateSPARQL.attachCube2AggregationSet(aggregationSetURI, 
+				cubeGraph.getURI(), datasetURI,sparqlservice);
+
+		OrderedPowerSet<LDResource> ops = new OrderedPowerSet<>((ArrayList<LDResource>) cubeDimensions);
+
+		// calculate all dimension combinations
+		for (int j = 1; j < cubeDimensions.size(); j++) {
+			List<LinkedHashSet<LDResource>> dimensionPermutations = ops.getPermutationsList(j);
+			for (Set<LDResource> perm : dimensionPermutations) {
+				List<String> listOfDims=StringUtil.ldResourceSet2StringList(perm) ;
+				// create new cube of aggregation set
+				String newCubeURI = AggregateSPARQL.createCubeForAggregationSet(datasetURI,
+						cubeGraph.getURI(), listOfDims, mapMeasureToAggregationFunction, 
+						aggregationSetURI,sparqlservice);		
+				LOGGER.log(Level.INFO, "Aggregated cube created "+ newCubeURI);
+			}			
+		
+		}
+		
+		
+		return Response.ok().header(allowOrigin, "*").build();
 	}
 
 	

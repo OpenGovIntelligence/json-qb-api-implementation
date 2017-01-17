@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.analysis.util.CharArrayMap.EntrySet;
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Label;

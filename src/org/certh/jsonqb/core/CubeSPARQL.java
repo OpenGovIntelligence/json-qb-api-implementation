@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 
 import org.certh.jsonqb.datamodel.DataCube;
 import org.certh.jsonqb.datamodel.LDResource;
-import org.certh.jsonqb.datamodel.Observation;
 import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.ObservationList;

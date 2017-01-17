@@ -1,5 +1,10 @@
 package org.certh.jsonqb.serialize;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.certh.jsonqb.datamodel.Label;
+
 public class SerializationConstants {
 
 	//*** Structure ***//
@@ -55,6 +60,17 @@ public class SerializationConstants {
 	
 	public static final String OBSERVATIONS="observations";
 	
+	
+	//*** CUBE METADATA ***//
+	
+	public static final String DESCRIPTION="description";
+	public static final String COMMENT = "comment";	
+	public static final String SUBJECT="subject";
+	public static final String ISSUED="issued";
+	public static final String MODIFIED="modified";
+	public static final String PUBLISHER="publisher";
+	public static final String LICENSE="license";
+			
 	private SerializationConstants() {
 		 // Throw an exception if this ever *is* called
 	    throw new AssertionError("Instantiating utility class.");

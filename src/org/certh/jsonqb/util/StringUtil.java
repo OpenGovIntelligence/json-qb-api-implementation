@@ -1,5 +1,11 @@
 package org.certh.jsonqb.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.certh.jsonqb.datamodel.LDResource;
+
 public class StringUtil {
 	
 	private StringUtil() {
@@ -24,5 +30,13 @@ public class StringUtil {
 			result.append(prefix+i+" ");
 		}
 		return result.toString();
+	}
+	
+	public static List<String> ldResourceSet2StringList(Set<LDResource> ldrSet){
+		List<String> strList=new ArrayList<>();
+		for(LDResource ldr: ldrSet){
+			strList.add(ldr.getURI());
+		}		
+		return strList;
 	}
 }

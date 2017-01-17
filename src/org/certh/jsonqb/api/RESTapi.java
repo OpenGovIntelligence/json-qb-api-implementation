@@ -9,8 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 
-public interface RESTapi {
-	
+public interface RESTapi {	
 
 	@GET
 	@Produces("application/json")
@@ -76,6 +75,11 @@ public interface RESTapi {
 	@Produces("application/json")
 	@Path("/dataset-metadata")
 	public Response getDataCubeMetadata(@QueryParam("dataset")String datasetURI) ;
+	
+	@GET
+	@Produces("application/json")
+	@Path("/create-aggregations")
+	public Response createAggregations(@Context UriInfo info) ;
 	
 	
 }
