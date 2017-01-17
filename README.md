@@ -33,6 +33,28 @@ Example result
 }
 ```
 
+### GET dataset-metadata
+
+Parameter: dataset (required)
+
+Example request:
+
+`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dataset-metadata?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment`
+
+Example result
+
+```
+{
+  "label": "Employment",
+  "description": "People are classed as \u0027in employment\u0027 (employee or self-employed) if they have done at least one hour of paid work in the week prior to their LFS interview. ... ",
+  "comment": "People are classed as \u0027in employment\u0027 (employee or self-employed) if they have done at least one hour of paid work in the week prior to their LFS interview",
+  "issued": "2014-07-29T01:00:00Z",
+  "modified": "2015-06-04T01:00:00Z",
+  "license": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/"
+}
+```
+
+
 ### GET dimensions
 
 Parameter: dataset (required)
