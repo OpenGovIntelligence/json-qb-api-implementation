@@ -122,21 +122,25 @@ public class ExploreSPARQL {
 	
 
 	//Get the cube of an AggregationSet that has only the specified dimensions
-	public static LDResource getCubeOfAggregationSet(String aggregationSetURI,
+	public static LDResource getCubeOfAggregationSet(String cubeURI,
 			List<String> dimensions, String sparqlService){
+		
+		LDResource aggregationSen=CubeSPARQL.getAggregationSetOfCube(cubeURI, sparqlService);
 				
 		StringBuilder getCubeOfAggregationSetQuery =new StringBuilder(SPARQLconstants.PREFIX);
 		getCubeOfAggregationSetQuery.append("select  distinct ?res where {" 
 				+ "?res opencube:aggregationSet ?set."
-				+ "?res qb:structure ?dsd." 
-				+ "?dsd qb:component ?cs.");
+				+ "?res qb:structure ?dsd.");
 		
+		int i=1;
 		for(String dim:dimensions){
-			getCubeOfAggregationSetQuery.append("?cs qb:dimension <"+dim+">.");
+			getCubeOfAggregationSetQuery.append("?dsd qb:component ?cs"+i+".");
+			getCubeOfAggregationSetQuery.append("?cs"+i+" qb:dimension <"+dim+">.");
+			i++;
 		}
 		
 		getCubeOfAggregationSetQuery.append("{select ?res where{"
-						+ "?res opencube:aggregationSet <"+aggregationSetURI+">."
+						+ "?res opencube:aggregationSet <"+aggregationSen.getURI()+">."
 						+ "?res qb:structure ?dsd."
 						+ "?dsd qb:component ?comp."
 						+ "?comp qb:dimension ?dim."

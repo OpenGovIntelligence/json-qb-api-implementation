@@ -2,7 +2,7 @@ package org.certh.jsonqb.datamodel;
 
 import java.util.List;
 
-public class DimensionValues {
+public class DimensionAttributeValues {
 
 	List<LDResource> values;
 	LDResource dimension;

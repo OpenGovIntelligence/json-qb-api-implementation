@@ -1,5 +1,7 @@
 package org.certh.jsonqb.api;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,7 +17,7 @@ public interface RESTapi {
 	@Produces("application/json")
 	@Path("/cubes")
 	public Response getAllCubes();
-	
+		
 	@GET
 	@Produces("application/json")
 	@Path("/aggregationSetcubes")
@@ -81,5 +83,9 @@ public interface RESTapi {
 	@Path("/create-aggregations")
 	public Response createAggregations(@Context UriInfo info) ;
 	
+	@GET
+	@Produces("application/json")
+	@Path("/cubeOfAggregationSet")
+	public Response getCubeOfAggregationSet(@QueryParam("dataset")String datasetURI,@QueryParam(value = "dimension[]")List<String> dimension);
 	
-}
+	}

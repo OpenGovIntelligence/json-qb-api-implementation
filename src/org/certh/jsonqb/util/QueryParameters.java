@@ -1,5 +1,6 @@
 package org.certh.jsonqb.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ public class QueryParameters {
 	private String columnDimensionURI;
 	private String measureURI;
 	private Map<String, String> fixedValues = new HashMap<>();
+	private List<String> dimensions=new ArrayList<>();
 
 	public QueryParameters(MultivaluedMap<String, String> parameters) {
 		datasetURI = parameters.getFirst("dataset");
@@ -24,6 +26,8 @@ public class QueryParameters {
 				fixedValues.put(param, parameters.getFirst(param));
 			}
 		}
+		dimensions=parameters.get("dimension");
+		
 	}
 
 	public String getMeasureURI() {
@@ -45,7 +49,9 @@ public class QueryParameters {
 	public Map<String, String> getFixedValues() {
 		return fixedValues;
 	}
-
 	
+	public List<String> getDimensionURIs() {
+		return dimensions;
+	}
 
 }

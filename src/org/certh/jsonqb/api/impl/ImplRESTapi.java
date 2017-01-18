@@ -1,7 +1,9 @@
 package org.certh.jsonqb.api.impl;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -23,7 +25,7 @@ import org.certh.jsonqb.core.CubeSPARQL;
 import org.certh.jsonqb.core.ExploreSPARQL;
 import org.certh.jsonqb.datamodel.AggregationFunctions;
 import org.certh.jsonqb.datamodel.DataCube;
-import org.certh.jsonqb.datamodel.DimensionValues;
+import org.certh.jsonqb.datamodel.DimensionAttributeValues;
 import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.LockedDimension;
 import org.certh.jsonqb.datamodel.Observation;
@@ -214,7 +216,7 @@ public class ImplRESTapi implements RESTapi {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.ATTRIBUTES));
 	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
-	   	    
+	    gsonBuilder.setPrettyPrinting();
 	    Gson gson = gsonBuilder.create();	   
 	    
 	    // Format to JSON
@@ -236,7 +238,7 @@ public class ImplRESTapi implements RESTapi {
 		List<LDResource> dimensionValues = CubeSPARQL.getDimensionAttributeValues(dimensionURI, datasetURI,
 				sparqlservice);
 
-		DimensionValues jsonDimVal = new DimensionValues();
+		DimensionAttributeValues jsonDimVal = new DimensionAttributeValues();
 		LDResource dimension = SPARQLUtil.getLabels(dimensionURI, sparqlservice);
 		jsonDimVal.setDimension(dimension);
 		jsonDimVal.setValues(dimensionValues);
@@ -266,15 +268,23 @@ public class ImplRESTapi implements RESTapi {
 		}
 		List<LDResource> attributeValues = CubeSPARQL.getDimensionAttributeValues(attributeURI, datasetURI,
 				sparqlservice);
+			
+
+		DimensionAttributeValues jsonDimVal = new DimensionAttributeValues();
+		LDResource attribute = SPARQLUtil.getLabels(attributeURI, sparqlservice);
+		jsonDimVal.setDimension(attribute);
+		jsonDimVal.setValues(attributeValues);
+		
+		
 		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.VALUES));
 	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
-	   	    
+	    gsonBuilder.setPrettyPrinting();
 	    Gson gson = gsonBuilder.create();	   
 	    
 	    // Format to JSON
-	    String json = gson.toJson(attributeValues);
+	    String json = gson.toJson(jsonDimVal);
 	    return Response.ok(json).header(allowOrigin, "*").build();
-
 	}
 
 	@Override
@@ -288,14 +298,22 @@ public class ImplRESTapi implements RESTapi {
 			return Response.serverError().build();
 		}
 		List<LDResource> dimensionLevels = CubeSPARQL.getCubeDimensionLevels(dimensionURI, datasetURI, sparqlservice);
+		
+		DimensionAttributeValues jsonDimVal = new DimensionAttributeValues();
+		
+		LDResource dimension = SPARQLUtil.getLabels(dimensionURI, sparqlservice);
+		jsonDimVal.setDimension(dimension);
+		jsonDimVal.setValues(dimensionLevels);
+		
+		
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.VALUES));
 	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
-	   	    
+	    gsonBuilder.setPrettyPrinting();
 	    Gson gson = gsonBuilder.create();	   
-	    
+		    
 	    // Format to JSON
-	    String json = gson.toJson(dimensionLevels);
+	    String json = gson.toJson(jsonDimVal);
 	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}
@@ -530,6 +548,28 @@ public class ImplRESTapi implements RESTapi {
 		
 		
 		return Response.ok().header(allowOrigin, "*").build();
+	}
+
+	@Override
+	public Response getCubeOfAggregationSet(String datasetURI, List<String> dimension) {
+		PropertyFileReader pfr = new PropertyFileReader();
+		String sparqlservice;
+		try {
+			sparqlservice = pfr.getSPARQLservice();
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, e.toString(), e);
+			return Response.serverError().build();
+		}		
+		
+		LDResource cubeOfAggSet =ExploreSPARQL.getCubeOfAggregationSet(datasetURI, dimension, sparqlservice);
+		
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+	    	   
+	    gsonBuilder.setPrettyPrinting();
+	    Gson gson = gsonBuilder.create();	   
+	    		    
+	    return Response.ok(gson.toJson(cubeOfAggSet)).header(allowOrigin, "*").build();
 	}
 
 	

@@ -29,6 +29,19 @@ public class CubeSPARQL {
 		
 	}
 	
+	public static LDResource getAggregationSetOfCube(String dataCubeURI, String sparqlService) {
+		String getCubeAggregationSetQuery = SPARQLconstants.PREFIX
+				+ "select distinct ?res  where {" 
+				+ "<"+dataCubeURI+"> opencube:aggregationSet ?res.}";
+
+		TupleQueryResult res = QueryExecutor.executeSelect(getCubeAggregationSetQuery, sparqlService);
+
+		List<LDResource> set = SPARQLresultTransformer.toLDResourceListWithLabels(res, sparqlService);
+
+		//Only one aggregation set exists
+		return set.get(0);		
+	}
+	
 	// Get all the dimensions of a data cube
 	// Input: The cubeURI, SPARQLservice
 	public static List<LDResource> getDataCubeDimensions(String dataCubeURI, String sparqlService) {
@@ -236,7 +249,7 @@ public class CubeSPARQL {
 		getTableQuery.append("Select distinct ");
 		
 		
-		//Ádd visual dims to SPARQL query
+		//ï¿½dd visual dims to SPARQL query
 		for (int j=1;j<=visualDims.size();j++) {
 			getTableQuery.append("?dim" + j + " ");			
 		}		
@@ -292,7 +305,7 @@ public class CubeSPARQL {
 		getTableQuery.append("Select distinct ");
 		
 		
-		//Ádd visual dims to SPARQL query
+		//ï¿½dd visual dims to SPARQL query
 		for (int j=1;j<=visualDims.size();j++) {
 			getTableQuery.append("?dim" + j + " ");			
 		}		
