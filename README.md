@@ -10,7 +10,37 @@ Parameter: none
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes)
+
+
+Example result
+
+```
+{
+  "cubes": [
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs#id",
+      "label": "Cube average price real estate"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-gemiddelde-prijs-1993#id",
+      "label": "Cube average price real estate (1993-2013)"
+    },
+    {
+      "@id": "http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen#id",
+      "label": "Cube building permits"
+    },...
+  ]
+}
+```
+
+### GET aggregationSetcubes
+
+Parameter: none
+
+Example request:
+
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes)
 
 Example result
 
@@ -39,7 +69,7 @@ Parameter: dataset (required)
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dataset-metadata?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dataset-metadata?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dataset-metadata?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
 
 Example result
 
@@ -62,7 +92,7 @@ Parameter: dataset (required)
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
 
 Example result
 
@@ -89,13 +119,34 @@ Example result
 }
 ```
 
+### GET attributes
+
+Parameter: dataset (required)
+
+Example request:
+
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
+
+Example result
+
+```
+{
+  "attributes": [
+    {
+      "@id": "http://statistics.gov.scot/def/concept/measure-units/ratio",
+      "label": "ratio"
+    }
+  ]
+}
+```
+
 ### GET measures
 
 Parameter: dataset (required)
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
 
 Example result
 
@@ -116,7 +167,7 @@ Parameter: dataset (required), dimension (required)
 
 Example request:
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23timePeriod`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23timePeriod](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23timePeriod)
 
 Example result
 
@@ -146,6 +197,69 @@ Example result
   }
 }
 ```
+
+### GET attribute-values
+
+Parameter: dataset (required), attribute (required)
+
+Example request:
+
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure)
+
+Example result
+
+```
+{
+  "values": [
+    {
+      "@id": "http://statistics.gov.scot/def/concept/measure-units/people",
+      "label": "people"
+    },
+    {
+      "@id": "http://statistics.gov.scot/def/concept/measure-units/percentage-of-population",
+      "label": "percentage-of-population"
+    }
+  ],
+  "dimension": {
+    "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+    "label": "unitMeasure"
+  }
+}
+```
+
+
+### GET dimension-levels
+
+Parameter: dataset (required), dimension (required)
+
+Example request:
+
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23refArea](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23refArea)
+
+Example result
+
+```
+{
+  "values": [
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/province#id",
+      "label": "Provincie"
+    },
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/region#id",
+      "label": "Région"
+    }
+  ],
+  "dimension": {
+    "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
+    "label": "Reference Area"
+  }
+}
+```
+
+
+
+
 ### GET slice
 
 Parameter: dataset (required), measure (required), 0 or more fixed dimension identifiers (optional)
@@ -153,7 +267,7 @@ Parameter: dataset (required), measure (required), 0 or more fixed dimension ide
 
 Example request
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
 
 Example result
 ```
@@ -194,7 +308,7 @@ Parameter: dataset(required), row (required), col (required), measure (required)
 
 Example request
 
-`GET http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col=http://id.vlaanderen.be/statistieken/def%23refArea&row=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id`
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col=http://id.vlaanderen.be/statistieken/def%23refArea&row=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col=http://id.vlaanderen.be/statistieken/def%23refArea&row=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
 
 Example result
 ```
