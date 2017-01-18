@@ -63,6 +63,23 @@ Example result
 }
 ```
 
+### GET cubeOfAggregationSet
+
+Parameter: dataset (required), 1 ore more dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
+
+Example request:
+
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension[]=http://purl.org/linked-data/sdmx/2009/dimension%23sex&dimension[]=http://id.vlaanderen.be/statistieken/def%23timePeriod](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension[]=http://purl.org/linked-data/sdmx/2009/dimension%23sex&dimension[]=http://id.vlaanderen.be/statistieken/def%23timePeriod)
+
+Example result
+
+```
+{
+  "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment_timePeriod_sex_3493111948015600912",
+  "label": "Employment (Scottish)"
+}
+```
+
 ### GET dataset-metadata
 
 Parameter: dataset (required)
