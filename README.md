@@ -65,7 +65,7 @@ Example result
 
 ### GET cubeOfAggregationSet
 
-Parameter: dataset (required), 1 ore more dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
+Parameter: dataset (required), 1 ore more free dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
 
 Example request:
 
