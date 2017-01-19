@@ -385,8 +385,8 @@ public class ImplRESTapi implements RESTapi {
 		QueryParameters qp=new QueryParameters(info.getQueryParameters());
 				
 		String datasetURI=qp.getDatasetURI();
-		String rowDimensionURIs = qp.getRowDimensionURI();
-		String columnDimensionURIs =qp.getColumnDimensionURI();
+		String rowDimensionURIs = qp.getRowDimensionURIs().get(0);
+		String columnDimensionURIs =qp.getColumnDimensionURIs().get(0);
 		String measure = qp.getMeasureURI();		
 		Map<String, String> fixedDims = qp.getFixedValues();		
 
@@ -452,34 +452,34 @@ public class ImplRESTapi implements RESTapi {
 			QueryParameters qp=new QueryParameters(info.getQueryParameters());
 					
 			String datasetURI=qp.getDatasetURI();
-			String rowDimensionURIs = qp.getRowDimensionURI();
-			String columnDimensionURIs =qp.getColumnDimensionURI();
+			List<String> rowDimensions = qp.getRowDimensionURIs();
+			List<String> columnDimensions =qp.getColumnDimensionURIs();
 			String measure = qp.getMeasureURI();		
 			Map<String, String> fixedDims = qp.getFixedValues();		
 
-			List<String> visualDims = new ArrayList<>();
-			visualDims.add(rowDimensionURIs);
-			visualDims.add(columnDimensionURIs);
+			//List<String> visualDims = new ArrayList<>();
+			//visualDims.add(rowDimensionURIs.get(0));
+			//visualDims.add(columnDimensionURIs.get(0));
 
 			List<String> selectedMeasures = new ArrayList<>();
 			List<LDResource> measures = CubeSPARQL.getDataCubeMeasures(datasetURI, sparqlservice);
 
-			Map<String, String> measureURILabelMap = new TreeMap<>();
+		//	Map<String, String> measureURILabelMap = new TreeMap<>();
 			for (LDResource meas : measures) {
 				// if there is a selected measure
 				if (!"".equals(measure)) {
 					if (meas.getURI().equals(measure)) {
 						selectedMeasures.add(meas.getURI());
-						measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
+				//		measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
 					}
 				// if there is no selected measure, assume all measures are selected
 				} else {
 					selectedMeasures.add(meas.getURI());
-					measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
+				//	measureURILabelMap.put(meas.getURI(), meas.getURIorLabel());
 				}
 			}
 
-			QBTable table = CubeSPARQL.getTable(visualDims, fixedDims, selectedMeasures, datasetURI, sparqlservice);
+			QBTable table = CubeSPARQL.getTable(rowDimensions,columnDimensions, fixedDims, selectedMeasures, datasetURI, sparqlservice);
 			
 			//Create GsonBuilder
 			GsonBuilder gsonBuilder = new GsonBuilder();

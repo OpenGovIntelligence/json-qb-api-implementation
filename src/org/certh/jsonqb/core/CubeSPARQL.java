@@ -297,18 +297,26 @@ public class CubeSPARQL {
 
 	}
 	
-	public static QBTable getTable(List<String> visualDims, Map<String, String> fixedDims,
-			List<String> selectedMeasures, String cubeURI, String sparqlService) {
+	public static QBTable getTable(List<String> rowDimensions,List<String> colDimensions,
+			Map<String, String> fixedDims, List<String> selectedMeasures,
+			String cubeURI, String sparqlService) {
 		
 		StringBuilder getTableQuery=new StringBuilder(SPARQLconstants.PREFIX);
 		
 		getTableQuery.append("Select distinct ");
 		
+		//add row dims to SPARQL query
+		for (int j=1;j<=rowDimensions.size();j++) {
+				getTableQuery.append("?row" + j + " ");			
+		}	
 		
-		//�dd visual dims to SPARQL query
-		for (int j=1;j<=visualDims.size();j++) {
-			getTableQuery.append("?dim" + j + " ");			
-		}		
+		
+		//add col dims to SPARQL query
+		if(colDimensions!=null){
+			for (int j=1;j<=colDimensions.size();j++) {
+				getTableQuery.append("?col" + j + " ");			
+			}
+		}
 
 	    // Add measures ?meas to SPARQL query
 		for (int j=1;j<=selectedMeasures.size();j++) {
@@ -332,13 +340,26 @@ public class CubeSPARQL {
 		}		
 		
 
-		i = 1;
+		//i = 1;
 		
 		// Add free dimensions to where clause
-		for (String vDim : visualDims) {
-			getTableQuery.append("?obs <" + vDim + "> " + "?dim" + i + ". ");
-			i++;
+		//for (String vDim : visualDims) {
+		//	getTableQuery.append("?obs <" + vDim + "> " + "?dim" + i + ". ");
+		//	i++;
+		//}
+		
+		//add row dims to SPARQL query
+		for (int j=0;j<rowDimensions.size();j++) {
+			getTableQuery.append("?obs <" + rowDimensions.get(j) + "> " + "?row" + (j+1) + ". ");			
+		}	
+						
+		//add visual dims to SPARQL query
+		if(colDimensions!=null){
+			for (int j=0;j<colDimensions.size();j++) {
+				getTableQuery.append("?obs <" + colDimensions.get(j) + "> " + "?col" + (j+1) + ". ");			
+			}
 		}
+		
 
 		i = 1;
 		for (String meas : selectedMeasures) {
@@ -348,8 +369,12 @@ public class CubeSPARQL {
 
 		getTableQuery.append("}");
 		
+		
+		
 		TupleQueryResult res = QueryExecutor.executeSelect(getTableQuery.toString(), sparqlService);
-		return SPARQLresultTransformer.toQBTable(res, selectedMeasures, visualDims,fixedDims,sparqlService);	
+		return SPARQLresultTransformer.toQBTable(rowDimensions,colDimensions,fixedDims,selectedMeasures,res, sparqlService);	
 
+		
+		
 	}
 }

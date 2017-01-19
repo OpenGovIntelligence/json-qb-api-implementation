@@ -150,14 +150,36 @@ public class SPARQLresultTransformer {
 		return qbt;
 	}
 	
+	
+	
+	
 	//NEED TO SUPPORT MULTIPLE MEASURE
-	public static QBTable toQBTable(TupleQueryResult res, List<String> measures,
-			List<String> visualDims,Map<String, String> fixedDims,	String sparqlService) {
+	public static QBTable toQBTable(List<String> rowDimensions,List<String> colDimensions,
+			Map<String, String> fixedDims, List<String> measures, TupleQueryResult res,
+			String sparqlService) {
 			
-			List<LDResource> visualDimsLD=new ArrayList<>();
-			for(String vDim:visualDims){
-				visualDimsLD.add(SPARQLUtil.getLabels(vDim, sparqlService));
+		    List<LDResource> rowDimsLD=new ArrayList<>();
+		    List<LDResource> colDimsLD=new ArrayList<>();
+		    List<LDResource> freeDimsLD=new ArrayList<>();
+		    
+		    List<String> freeDims=new ArrayList<>();
+		    freeDims.addAll(rowDimensions);
+		    
+		
+		    for(String rowDim:rowDimensions){
+				rowDimsLD.add(SPARQLUtil.getLabels(rowDim, sparqlService));
 			}
+		    
+			
+		    if(colDimensions!=null){
+		    	freeDims.addAll(colDimensions);
+				for(String colDim:colDimensions){
+					colDimsLD.add(SPARQLUtil.getLabels(colDim, sparqlService));
+				}
+		    }
+			
+			freeDimsLD.addAll(rowDimsLD);
+			freeDimsLD.addAll(colDimsLD);
 			
 			List<LockedDimension> lockedDims=new ArrayList<>();
 			for(String fDim:fixedDims.keySet()){
@@ -190,35 +212,67 @@ public class SPARQLresultTransformer {
 				i = 1;
 
 				// Add dimension values to observation
-				for (String dim : visualDims) {
-					String value = bindingSet.getValue("dim" + i).stringValue();
-					obs.putObservationValue(dim, value);
-
+				for (String rowDim : rowDimensions) {
+					String value = bindingSet.getValue("row" + i).stringValue();
+					obs.putObservationValue(rowDim, value);
 					i++;
 				}
+								
+				i = 1;
+
+				// Add dimension values to observation
+				if(colDimensions!=null){
+					for (String colDim : colDimensions) {
+						String value = bindingSet.getValue("col" + i).stringValue();
+						obs.putObservationValue(colDim, value);
+	
+						i++;
+					}
+				}
+				
 				observationList.addObservation(obs);
 			}
 			
 			//get the dimension values used by the cube observations 
-			Map<String, List<LDResource>> dimVals = observationList.getDimensionValuesWithLabels(visualDims,sparqlService);
+			Map<String, List<LDResource>> dimVals = observationList.getDimensionValuesWithLabels(freeDims,sparqlService);
 				
-			String rowDim = visualDims.get(0);
-			String colDim = visualDims.get(1);
-			List<LDResource> rowDimValues = dimVals.get(rowDim);
-			List<LDResource> colDimValues = dimVals.get(colDim);
+			String rowDim = rowDimensions.get(0);
+			String colDim=null;
+			if(colDimensions!=null){
+				colDim=colDimensions.get(0);
+			}
 			
-			Number[] listOfNumbers = new Number[rowDimValues.size()*colDimValues.size()];
-			//initialize list with empty values
-			for(int i=0;i<rowDimValues.size()*colDimValues.size();i++){
-				listOfNumbers[i]=null;
+			List<LDResource> rowDimValues = dimVals.get(rowDim);
+			List<LDResource> colDimValues=null;
+			Number[] listOfNumbers;
+			if(colDimensions!=null){
+				colDimValues = dimVals.get(colDim);			
+			
+				listOfNumbers = new Number[rowDimValues.size()*colDimValues.size()];
+				//initialize list with empty values
+				for(int i=0;i<rowDimValues.size()*colDimValues.size();i++){
+					listOfNumbers[i]=null;
+				}
+			}else{			
+				listOfNumbers = new Number[rowDimValues.size()];
+				//initialize list with empty values
+				for(int i=0;i<rowDimValues.size();i++){
+					listOfNumbers[i]=null;
+				}
 			}
 			
 			for(Observation obs:observationList.getListOfObservations()){
 				LDResource obsRowVal =new LDResource( obs.getObservationValues().get(rowDim));
-				LDResource obsColVal = new LDResource(obs.getObservationValues().get(colDim));
-
-				//Row major order
-				int obsIndex=rowDimValues.indexOf(obsRowVal)*colDimValues.size()+colDimValues.indexOf(obsColVal);
+				int obsIndex;
+				if(colDim!=null){
+					LDResource obsColVal = new LDResource(obs.getObservationValues().get(colDim));
+					//Row major order
+					obsIndex=rowDimValues.indexOf(obsRowVal)*colDimValues.size()+colDimValues.indexOf(obsColVal);
+				}else{
+					//Row major order
+					obsIndex=rowDimValues.indexOf(obsRowVal);
+				}
+				
 				
 				//NEED TO SUPPORT MULTIPLE MEASURES
 				for (String meas : measures) {
@@ -235,9 +289,11 @@ public class SPARQLresultTransformer {
 			}
 			
 			qbt.setData(Arrays.asList(listOfNumbers));	
-			qbt.setFreeDimensions(visualDimsLD);
-			qbt.addColumn(visualDimsLD.get(1));
-			qbt.addRow(visualDimsLD.get(0));
+			qbt.setFreeDimensions(freeDimsLD);
+			if(colDimensions!=null){
+				qbt.addColumn(colDimsLD.get(0));
+			}
+			qbt.addRow(rowDimsLD.get(0));
 			qbt.setLockedDimensions(lockedDims);
 			qbt.setDimensionValues(dimValsLDR);
 			return qbt;

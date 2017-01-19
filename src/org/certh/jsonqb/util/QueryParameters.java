@@ -10,23 +10,23 @@ import javax.ws.rs.core.MultivaluedMap;
 public class QueryParameters {
 
 	private String datasetURI;
-	private String rowDimensionURI;
-	private String columnDimensionURI;
+	private List<String> rowDimensionURIs;
+	private List<String> columnDimensionURIs;
 	private String measureURI;
 	private Map<String, String> fixedValues = new HashMap<>();
-	private List<String> dimensions=new ArrayList<>();
+	//private List<String> dimensions=new ArrayList<>();
 
 	public QueryParameters(MultivaluedMap<String, String> parameters) {
 		datasetURI = parameters.getFirst("dataset");
-		rowDimensionURI = parameters.getFirst("row");
-		columnDimensionURI = parameters.getFirst("col");
+		rowDimensionURIs = parameters.get("row[]");
+		columnDimensionURIs = parameters.get("col[]");
 		measureURI = parameters.getFirst("measure");
 		for (String param : parameters.keySet()) {
-			if (!"dataset".equals(param) && !"col".equals(param) && !"row".equals(param) && !"measure".equals(param)) {
+			if (!"dataset".equals(param) && !"col[]".equals(param) && !"row[]".equals(param) && !"measure".equals(param)) {
 				fixedValues.put(param, parameters.getFirst(param));
 			}
 		}
-		dimensions=parameters.get("dimension");
+	//	dimensions=parameters.get("dimension");
 		
 	}
 
@@ -38,20 +38,20 @@ public class QueryParameters {
 		return datasetURI;
 	}
 
-	public String getRowDimensionURI() {
-		return rowDimensionURI;
+	public List<String> getRowDimensionURIs() {
+		return rowDimensionURIs;
 	}
 
-	public String getColumnDimensionURI() {
-		return columnDimensionURI;
+	public List<String> getColumnDimensionURIs() {
+		return columnDimensionURIs;
 	}
 
 	public Map<String, String> getFixedValues() {
 		return fixedValues;
 	}
 	
-	public List<String> getDimensionURIs() {
-		return dimensions;
-	}
+	//public List<String> getDimensionURIs() {
+	//	return dimensions;
+	//}
 
 }

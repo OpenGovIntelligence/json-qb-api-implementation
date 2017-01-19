@@ -153,6 +153,19 @@ public class QBTableSerializer implements JsonSerializer<QBTable> {
 			for(LDResource val:rowValues){
 				data.add(createRow(qbtable, 0));
 			}
+		}else if(!qbtable.getRowHierarchy().isEmpty()){
+			LDResource rowDim =qbtable.getRowHierarchy().get(0);
+			List<LDResource> valuesOfDimUsed= qbtable.getDimensionValues().get(rowDim);
+			for(int i=0;i<valuesOfDimUsed.size();i++){
+				Number cell=qbtable.getData().get(arrayIndex);
+				if(cell==null){
+					data.add(JsonNull.INSTANCE);
+				}else{
+					JsonPrimitive jsoncell = new JsonPrimitive(cell);
+					data.add(jsoncell);
+				}				
+				arrayIndex++;				
+			}			
 		}
 		
 		return data;
