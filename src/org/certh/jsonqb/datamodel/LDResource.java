@@ -60,6 +60,34 @@ public class LDResource implements Comparable<LDResource> {
 	public List<Label> getLabels(){
 		return labels;
 	}
+	
+	public String getLabel(String lang){
+		String enLabel=null;
+		String labelWithLanguage=null;
+		String otherLabel=getURIorLabel();
+		for(Label l:getLabels()){
+			if(l.getLanguage()!=null){
+				if(l.getLanguage().equals(lang)){
+					labelWithLanguage=l.getLabel();
+				}else if(l.getLanguage().equals("en")){
+					enLabel=l.getLabel();
+				}
+			}else{
+				otherLabel=l.getLabel();
+			}
+		}
+		
+		if(labelWithLanguage!=null){
+			return labelWithLanguage;
+		}else if(enLabel!=null){
+			return enLabel;
+		}else{
+			return otherLabel;
+		}
+	}
+	
+	
+	
 
 	public void setLabels(List<Label> labels) {
 		this.labels = labels;
@@ -76,6 +104,8 @@ public class LDResource implements Comparable<LDResource> {
 	public void addLabel(Label label) {
 		this.labels.add(label);
 	}
+	
+	
 	
 
 	// If labels exists return the 1st label 

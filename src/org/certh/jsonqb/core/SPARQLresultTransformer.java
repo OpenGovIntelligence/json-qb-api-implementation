@@ -341,12 +341,7 @@ public class SPARQLresultTransformer {
 				}
 			}
 			
-			if(bindingSet.getValue("title")!=null){
-				Label title=new Label((Literal) bindingSet.getValue("title"));
-				if(!qb.getTitles().contains(title)){
-					qb.addTitle(title);
-				}				
-			}
+			
 			
 			if(bindingSet.getValue("description")!=null){
 				Label description=new Label((Literal) bindingSet.getValue("description"));

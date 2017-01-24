@@ -7,7 +7,6 @@ import org.eclipse.rdf4j.model.Literal;
 
 public class DataCube extends LDResource {
 	
-	private List<Label> titles=new ArrayList<>();
 	private List<Label> desctiptions=new ArrayList<>();	
 	private List<Label> comments=new ArrayList<>();
 	private List<String> subjects=new ArrayList<>();
@@ -24,24 +23,6 @@ public class DataCube extends LDResource {
 		super(uRI);
 	}
 	
-	public List<Label> getTitles() {
-		return titles;
-	}
-	public void setTitles(List<Label> titles) {
-		this.titles = titles;
-	}
-	
-	public void addTitle(String titlestr) {
-		this.titles.add(new Label(titlestr));	
-	}
-	
-	public void addTitle(Literal literal) {
-		this.titles.add(new Label(literal));
-	}
-	
-	public void addTitle(Label label) {
-		this.titles.add(label);
-	}
 	
 	public List<Label> getDesctiptions() {
 		return desctiptions;

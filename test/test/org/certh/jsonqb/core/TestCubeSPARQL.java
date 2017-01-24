@@ -41,7 +41,6 @@ public class TestCubeSPARQL {
 	
 		 assertEquals(2,qb.getComments().size());
 		 assertEquals(2,qb.getDesctiptions().size());
-		 assertEquals(2,qb.getTitles().size());
 		 assertEquals(2,qb.getLabels().size());
 		 assertEquals(2,qb.getSubjects().size());
 		 assertNotNull(qb.getIssued());

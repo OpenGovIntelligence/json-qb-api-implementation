@@ -1,10 +1,5 @@
 package org.certh.jsonqb.serialize;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.certh.jsonqb.datamodel.Label;
-
 public class SerializationConstants {
 
 	//*** Structure ***//

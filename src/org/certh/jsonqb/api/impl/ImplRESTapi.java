@@ -419,7 +419,7 @@ public class ImplRESTapi implements RESTapi {
 			Map<String, String> dimURILabelMap = new LinkedHashMap<>();
 			List<LDResource> tabledimValues = table.getDimVals().get(dim);		
 			for (LDResource ldr : tabledimValues) {				
-				dimURILabelMap.put(ldr.getURI(), ldr.getURIorLabel());			
+				dimURILabelMap.put(ldr.getURI(), ldr.getLabel("en"));			
 			}
 
 			LDResource dimLDR = SPARQLUtil.getLabels(dim, sparqlservice);

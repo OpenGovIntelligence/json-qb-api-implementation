@@ -3,6 +3,7 @@ package org.certh.jsonqb.serialize;
 import java.lang.reflect.Type;
 
 import org.certh.jsonqb.datamodel.LDResource;
+import org.certh.jsonqb.datamodel.Label;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,7 +17,8 @@ public class LDResourceSerializer implements JsonSerializer<LDResource> {
 		
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty(SerializationConstants.ID, ldr.getURI());
-		jsonObject.addProperty(SerializationConstants.LABEL, ldr.getURIorLabel());
+		
+		jsonObject.addProperty(SerializationConstants.LABEL, ldr.getLabel("en"));
 
 		if(ldr.getOrder()>0){
 			jsonObject.addProperty(SerializationConstants.ORDER, ldr.getOrder());

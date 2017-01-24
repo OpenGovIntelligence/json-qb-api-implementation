@@ -1,6 +1,8 @@
 package org.certh.jsonqb.serialize;
 
 import org.certh.jsonqb.datamodel.DataCube;
+import org.certh.jsonqb.datamodel.Label;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -17,10 +19,10 @@ public class DataCubeSerializer implements JsonSerializer<DataCube> {
 		
 		jsonObject.addProperty(SerializationConstants.ID, qb.getURI());
 		
-		if(!qb.getTitles().isEmpty()){
-			jsonObject.addProperty(SerializationConstants.LABEL, qb.getTitles().get(0).getLabel());
+		
+		jsonObject.addProperty(SerializationConstants.LABEL, qb.getLabel("en"));
 			
-		}
+		
 		
 		if(!qb.getDesctiptions().isEmpty()){
 			jsonObject.addProperty(SerializationConstants.DESCRIPTION, qb.getDesctiptions().get(0).getLabel());
