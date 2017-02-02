@@ -279,15 +279,16 @@ Example result
 
 ### GET slice
 
-Parameter: 
+Parameters: 
 * dataset(required),
-* 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional)
+* 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional) - if no measures defined ALL are returned
 * 0 or more fixed dimension identifiers (optional), 
-* mode= URI | label (optional) 
+* mode= URI | label (optional) - if no mode is defined then labels are returned
+* limit = NUMBER (e.g. limit=100) (optional)
           
 Example request
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
 
 Example result
 ```
@@ -323,11 +324,12 @@ Example result
 
 ### GET table
 
-Parameter: dataset(required), 
-           1 or more row as array (required) i.e. row[]=DIM1 & row[]=DIM2 (required)           
-           0 ore more col as array i.e. col[]=DIM3 & col[]=DIM4 (optional)           
-           measure (required),           
-           0 or more fixed dimension identifiers (optional)
+Parameter: 
+* dataset(required), 
+* 1 or more row as array (required) i.e. row[]=DIM1 & row[]=DIM2 (required)           
+* 0 ore more col as array i.e. col[]=DIM3 & col[]=DIM4 (optional)           
+* 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional) - if no measures defined ALL are returned         
+* 0 or more fixed dimension identifiers (optional)
 
 NOTE: currenlty the API supports maximum 1 row and 1 col. Need to update to support more!!!
 
