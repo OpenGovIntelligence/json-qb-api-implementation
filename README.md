@@ -285,12 +285,47 @@ Parameters:
 * 0 or more fixed dimension identifiers (optional), 
 * mode= URI | label (optional) - if no mode is defined then labels are returned
 * limit = NUMBER (e.g. limit=100) (optional)
-          
-Example request
+  
+Example request 1:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&limit=100&mode=label](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&limit=100&mode=label)      
 
-Example result
+Example result 1:
+
+  ```
+  {
+  "observations": [
+    {
+      "Age group": "16-24",
+      "Geslacht": "",
+      "Period of time": "2004",
+      "Reference area": "Clackmannanshire",
+      "employment rate": "62.7",
+      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+    },
+    {
+      "Age group": "16-24",
+      "Geslacht": "",
+      "Period of time": "2004",
+      "Reference area": "Clackmannanshire",
+      "employment rate": "62.7",
+      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+    },
+    {
+      "Age group": "16-24",
+      "Geslacht": "",
+      "Period of time": "2005",
+      "Reference area": "Clackmannanshire",
+      "employment rate": "61.2",
+      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2005/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+    },
+  ```
+     
+Example request 2:
+
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
+
+Example result 2:
 ```
 {
   "observations": [
