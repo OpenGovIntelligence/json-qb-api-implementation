@@ -279,16 +279,11 @@ Example result
 
 ### GET slice
 
-Parameter:
-Markup :* dataset(required), 
-        * 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional)                 
-        * 0 or more fixed dimension identifiers (optional), 
-        * mode = URI | label (optional)
-           
-
-Parameter: dataset (required), measure (required), 0 or more fixed dimension identifiers (optional)
-
-
+Parameter:* dataset(required), 
+          * 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional)                 
+          * 0 or more fixed dimension identifiers (optional), 
+          * mode= URI | label (optional) 
+          
 Example request
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
