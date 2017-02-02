@@ -61,10 +61,14 @@ public class LDResource implements Comparable<LDResource> {
 		return labels;
 	}
 	
+	//default label = "en"
 	public String getLabel(String lang){
 		String enLabel=null;
 		String labelWithLanguage=null;
-		String otherLabel=getURIorLabel();
+		String otherLabel=null;
+		if(!labels.isEmpty()){
+			otherLabel=labels.get(0).getLabel();
+		}
 		for(Label l:getLabels()){
 			if(l.getLanguage()!=null){
 				if(l.getLanguage().equals(lang)){
@@ -112,9 +116,12 @@ public class LDResource implements Comparable<LDResource> {
 	// else return the last part of the URI (either after last '#' or after last '/')
 	public String getURIorLabel()  {
 		
-		if (!labels.isEmpty() && labels.get(0) != null && labels.get(0).getLabel()!=null &&
-				! "".equals(labels.get(0).getLabel())) {
-			return labels.get(0).getLabel();			
+		if (!labels.isEmpty() && getLabel("en")!=null && !"".equals(getLabel("en"))){
+			return getLabel("en");
+		
+		//if (!labels.isEmpty() && labels.get(0) != null && labels.get(0).getLabel()!=null &&
+		//		! "".equals(labels.get(0).getLabel())) {
+		//	return labels.get(0).getLabel();			
 		} else{ 
 			return getLastPartOfURI();
 		}

@@ -168,7 +168,8 @@ public class CubeSPARQL {
 	
 
 	public static ObservationList getSlice(List<String> visualDims, Map<String, String> fixedDims,
-			List<String> selectedMeasures, String cubeURI, String sparqlService) {
+			List<String> selectedMeasures, String cubeURI, String mode,
+			int limit, String sparqlService) {
 
 		Map<String, String> mapVariableNameURI = new HashMap<>();
 		mapVariableNameURI.put("obs", "id");
@@ -176,19 +177,48 @@ public class CubeSPARQL {
 		StringBuilder getSliceQuery=new StringBuilder(SPARQLconstants.PREFIX);
 		getSliceQuery.append("Select distinct ?obs ");
 
+		List<LDResource> dimensions=CubeSPARQL.getDataCubeDimensions(cubeURI, sparqlService);
+		
 		int i = 1;
 		// Add dimensions ?dim to SPARQL query
 		for (String vDim : visualDims) {
-			getSliceQuery.append("?dim" + i + " ");
-			mapVariableNameURI.put("dim" + i, vDim);
+			getSliceQuery.append("?val" + i + " ");
+			
+			//Find the LDResource dimension
+			for(LDResource dim:dimensions){
+				if(dim.getURI().equals(vDim)){
+					//if mode = URI use URIs as names of the dimensions
+					if("URI".equals(mode)){
+						mapVariableNameURI.put("val" + i, dim.getURI());
+					//else use labels as names of the dimensions
+					}else{
+						mapVariableNameURI.put("val" + i, dim.getURIorLabel());
+					}
+				}
+			}			
 			i++;
 		}
 
 		i = 1;
+		
+		List<LDResource> measures=CubeSPARQL.getDataCubeMeasures(cubeURI, sparqlService);
 		// Add measures ?meas to SPARQL query
 		for (String meas : selectedMeasures) {
 			getSliceQuery.append("?measure" + i + " ");
-			mapVariableNameURI.put("measure" + i, meas);
+			
+			//Find the LDResource dimension
+			for(LDResource measLDR:measures){
+				if(measLDR.getURI().equals(meas)){
+					//if mode = URI use URIs as names of the dimensions
+					if("URI".equals(mode)){
+						mapVariableNameURI.put("measure" + i, measLDR.getURI());
+					//else use labels as names of the dimensions
+					}else{
+						mapVariableNameURI.put("measure" + i, measLDR.getURIorLabel());
+					}
+				}
+			}
+						
 			i++;
 		}
 
@@ -197,15 +227,15 @@ public class CubeSPARQL {
 
 		// Add fixed dimensions to where clause
 		i = 1;
-		for (Map.Entry<String, String> entry : fixedDims.entrySet()) {
-			getSliceQuery.append("?obs <" + entry.getKey() + "> ");
-			if (entry.getValue().contains("http")) {
-				getSliceQuery.append("<" + entry.getValue() + ">.");
-			} else {
-				getSliceQuery.append("?value" + i + "." + "FILTER(STR(?value" + i + ")='" + entry.getValue() + "')");
-			}
-			i++;
-		}
+		//for (Map.Entry<String, String> entry : fixedDims.entrySet()) {
+		//	getSliceQuery.append("?obs <" + entry.getKey() + "> ");
+		//	if (entry.getValue().contains("http")) {
+		//		getSliceQuery.append("<" + entry.getValue() + ">.");
+		//	} else {
+		//		getSliceQuery.append("?value" + i + "." + "FILTER(STR(?value" + i + ")='" + entry.getValue() + "')");
+		//	}
+		//	i++;
+		//}
 		
 		
 		for (Entry<String, String> fDimEntry : fixedDims.entrySet()) {
@@ -221,7 +251,13 @@ public class CubeSPARQL {
 		i = 1;
 		// Add free dimensions to where clause
 		for (String vDim : visualDims) {
-			getSliceQuery.append("?obs <" + vDim + "> " + "?dim" + i + ". ");
+			if("URI".equals(mode)){
+				getSliceQuery.append("?obs <" + vDim + "> " + "?val" + i + ". ");
+			}else{
+				getSliceQuery.append("?obs <" + vDim + "> " + "?dim" + i + ". "
+						+ "OPTIONAL{?dim"+ i +" skos:prefLabel|rdfs:label ?val"+i+". }");
+			}
+			
 			i++;
 		}
 
@@ -231,10 +267,16 @@ public class CubeSPARQL {
 			i++;
 		}
 
-		getSliceQuery.append("} ORDER BY ");
+		getSliceQuery.append("} ");
 		
-		for (int j=1;j<=visualDims.size();j++) {
-			getSliceQuery.append("?dim" + j + " ");			
+		//getSliceQuery.append("ORDER BY ");
+		 
+		//for (int j=1;j<=visualDims.size();j++) {
+		//	getSliceQuery.append("?val" + j + " ");			
+		//}
+		
+		if(limit!=-1){
+			getSliceQuery.append("LIMIT "+limit);
 		}
 				
 		TupleQueryResult res = QueryExecutor.executeSelect(getSliceQuery.toString(), sparqlService);

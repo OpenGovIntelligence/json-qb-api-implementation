@@ -5,6 +5,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -331,7 +332,18 @@ public class ImplRESTapi implements RESTapi {
 		
 		QueryParameters qp=new QueryParameters(info.getQueryParameters());
 		String datasetURI = qp.getDatasetURI();
-		String measure = qp.getMeasureURI();
+		String mode=qp.getMode();
+		int limit=qp.getLimit();
+		
+		
+		List<String> measures = qp.getMeasureURIs();
+		
+		//if no measures are defined at parameters then use all measures
+		if (measures==null||measures.isEmpty()) {
+			List<LDResource> measuresLDR = CubeSPARQL.getDataCubeMeasures(datasetURI, sparqlservice);
+			measures=StringUtil.ldResourceSet2StringList(new HashSet<>(measuresLDR));			
+		}
+		
 		Map<String, String> fixedDims = qp.getFixedValues();
 		
 		List<LDResource> dimensions = CubeSPARQL.getDataCubeDimensions(datasetURI, sparqlservice);
@@ -342,19 +354,10 @@ public class ImplRESTapi implements RESTapi {
 			}
 		}
 
-		List<String> selectedMeasures = new ArrayList<>();
-		if (!"".equals(measure)) {
-			selectedMeasures.add(measure);
-		} else {
-			List<LDResource> measures = CubeSPARQL.getDataCubeMeasures(datasetURI, sparqlservice);
-			for (LDResource meas : measures) {
-				selectedMeasures.add(meas.getURI());
-			}
-		}
-
-		ObservationList slice = CubeSPARQL.getSlice(visualDims, fixedDims, selectedMeasures, datasetURI,
-				sparqlservice);
 		
+
+		ObservationList slice = CubeSPARQL.getSlice(visualDims, fixedDims, measures,
+				datasetURI,mode, limit, sparqlservice);		
 		
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(ObservationList.class, new ObservationListSerializer());
@@ -387,7 +390,7 @@ public class ImplRESTapi implements RESTapi {
 		String datasetURI=qp.getDatasetURI();
 		String rowDimensionURIs = qp.getRowDimensionURIs().get(0);
 		String columnDimensionURIs =qp.getColumnDimensionURIs().get(0);
-		String measure = qp.getMeasureURI();		
+		String measure = qp.getMeasureURIs().get(0);		
 		Map<String, String> fixedDims = qp.getFixedValues();		
 
 		List<String> visualDims = new ArrayList<>();
@@ -454,7 +457,7 @@ public class ImplRESTapi implements RESTapi {
 			String datasetURI=qp.getDatasetURI();
 			List<String> rowDimensions = qp.getRowDimensionURIs();
 			List<String> columnDimensions =qp.getColumnDimensionURIs();
-			String measure = qp.getMeasureURI();		
+			String measure = qp.getMeasureURIs().get(0);		
 			Map<String, String> fixedDims = qp.getFixedValues();		
 
 			//List<String> visualDims = new ArrayList<>();

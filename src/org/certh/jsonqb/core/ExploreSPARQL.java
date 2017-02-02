@@ -155,10 +155,7 @@ public class ExploreSPARQL {
 			return cubeOfAggregationSet.get(0);
 		}else{
 			return null;
-		}
-		
-				
-		
+		}		
 	}
 
 }

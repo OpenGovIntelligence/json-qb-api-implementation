@@ -96,9 +96,11 @@ public class TestCubeSPARQL {
 		 List<String> selectedMeasures=new ArrayList<String>();
 		 selectedMeasures.add("http://id.vlaanderen.be/statistieken/def#aantalnwwz");
 		 
+		 String mode="URI";
+		 int limit =-1;
 		 
 		 ObservationList observations= CubeSPARQL.getSlice(
-				 visualDims, fixedDims, selectedMeasures, dataCubeURI, SPARQLservice); 
+				 visualDims, fixedDims, selectedMeasures, dataCubeURI,mode,limit, SPARQLservice); 
 		 
 		 assertEquals(42,observations.getListOfObservations().size());
 	 } 

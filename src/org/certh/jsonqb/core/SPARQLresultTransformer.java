@@ -16,8 +16,11 @@ import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.ObservationList;
 import org.certh.jsonqb.util.SPARQLUtil;
 import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
+
+
 
 public class SPARQLresultTransformer {
 	
@@ -307,7 +310,12 @@ public class SPARQLresultTransformer {
 			BindingSet bindingSet = res.next();
 			Observation obs = new Observation();
 			for (Map.Entry<String, String> entry : mapVariableNameURI.entrySet()) {
-				String value = bindingSet.getValue(entry.getKey()).stringValue();
+				Value v=bindingSet.getValue(entry.getKey());
+				String value="";
+				if(v!=null){
+					value=v.stringValue();
+				}
+				
 				obs.putObservationValue(entry.getValue(), value);
 			}			
 	
