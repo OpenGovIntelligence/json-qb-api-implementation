@@ -321,9 +321,13 @@ Example result
 ### GET table
 
 Parameter: dataset(required), 
+
            1 or more row as array (required) i.e. row[]=DIM1 & row[]=DIM2 (required)
+           
            0 ore more col as array i.e. col[]=DIM3 & col[]=DIM4 (optional)
+           
            measure (required),
+           
            0 or more fixed dimension identifiers (optional)
 
 NOTE: currenlty the API supports maximum 1 row and 1 col. Need to update to support more!!!
