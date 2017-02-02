@@ -279,10 +279,11 @@ Example result
 
 ### GET slice
 
-Parameter: dataset(required), </br>
-           0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional) </br>                      
-           0 or more fixed dimension identifiers (optional), </br>
-           mode = URI | label (optional)</br>
+Parameter: * dataset(required), 
+           * 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional)                 
+           * 0 or more fixed dimension identifiers (optional), 
+           * mode = URI | label (optional)
+           
 
 Parameter: dataset (required), measure (required), 0 or more fixed dimension identifiers (optional)
 
