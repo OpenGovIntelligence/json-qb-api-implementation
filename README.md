@@ -279,6 +279,11 @@ Example result
 
 ### GET slice
 
+Parameter: dataset(required), </br>
+           0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional) </br>                      
+           0 or more fixed dimension identifiers (optional), </br>
+           mode = URI | label (optional)</br>
+
 Parameter: dataset (required), measure (required), 0 or more fixed dimension identifiers (optional)
 
 
@@ -321,13 +326,9 @@ Example result
 ### GET table
 
 Parameter: dataset(required), 
-
-           1 or more row as array (required) i.e. row[]=DIM1 & row[]=DIM2 (required)
-           
-           0 ore more col as array i.e. col[]=DIM3 & col[]=DIM4 (optional)
-           
-           measure (required),
-           
+           1 or more row as array (required) i.e. row[]=DIM1 & row[]=DIM2 (required)           
+           0 ore more col as array i.e. col[]=DIM3 & col[]=DIM4 (optional)           
+           measure (required),           
            0 or more fixed dimension identifiers (optional)
 
 NOTE: currenlty the API supports maximum 1 row and 1 col. Need to update to support more!!!
