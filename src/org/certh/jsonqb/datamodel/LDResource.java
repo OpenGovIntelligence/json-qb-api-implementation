@@ -65,7 +65,7 @@ public class LDResource implements Comparable<LDResource> {
 	public String getLabel(String lang){
 		String enLabel=null;
 		String labelWithLanguage=null;
-		String otherLabel=null;
+		String otherLabel=getLastPartOfURI();
 		if(!labels.isEmpty()){
 			otherLabel=labels.get(0).getLabel();
 		}
@@ -140,8 +140,10 @@ public class LDResource implements Comparable<LDResource> {
 				return val;
 			}
 			
-		} else {
+		} else if(URI.contains("/")) {
 			return URI.substring(URI.lastIndexOf('/') + 1, URI.length());
+		} else{
+			return URI;	
 		}
 
 	}

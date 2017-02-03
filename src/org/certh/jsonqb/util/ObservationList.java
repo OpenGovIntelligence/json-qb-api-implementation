@@ -73,7 +73,11 @@ public class ObservationList {
 			List<LDResource> valsWithLabels = new ArrayList<>();
 			
 			for(String val:values){
-				LDResource ldr = SPARQLUtil.getLabels(val, sparqlService);
+				LDResource ldr=new LDResource(val);
+				//if it is a URI then get labels
+				if(val.startsWith("http://")){
+					ldr = SPARQLUtil.getLabels(val, sparqlService);
+				}				
 				valsWithLabels.add(ldr);
 			}
 			Collections.sort(valsWithLabels,LDResource.labelComparator);
