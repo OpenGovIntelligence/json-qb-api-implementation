@@ -32,7 +32,7 @@ public class QueryExecutor {
 		repo.initialize();
 		RepositoryConnection con = repo.getConnection();
 		TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-		LOGGER.log(Level.INFO, queryString);
+		//LOGGER.log(Level.INFO, queryString);
 		
 		TupleQueryResult res = null;
 		try {

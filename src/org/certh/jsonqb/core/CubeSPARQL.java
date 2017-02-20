@@ -39,7 +39,11 @@ public class CubeSPARQL {
 		List<LDResource> set = SPARQLresultTransformer.toLDResourceListWithLabels(res, sparqlService);
 
 		//Only one aggregation set exists
-		return set.get(0);		
+		if(set.isEmpty()){
+			return null;
+		}else{
+			return set.get(0);
+		}
 	}
 	
 	// Get all the dimensions of a data cube
@@ -88,13 +92,15 @@ public class CubeSPARQL {
 		return cubeAttributes;
 	}
 
+	
 	public static List<LDResource> getDimensionAttributeValues(String dimensionURI, String cubeURI,
 			String sparqlService) {
 
 			String getDimensionValuesQuery = SPARQLconstants.PREFIX
-				+ "select  distinct ?res  where {"
+				+ "select  distinct ?res  ?label where {"
 				+ "?observation qb:dataSet <" + cubeURI + ">."
 				+ "?observation <" + dimensionURI + "> ?res."
+				+ "OPTIONAL{?res  skos:prefLabel|rdfs:label ?label.}"
 				+ "}";			
 
 		TupleQueryResult res = QueryExecutor.executeSelect(getDimensionValuesQuery, sparqlService);

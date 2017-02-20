@@ -60,6 +60,14 @@ public class ImplRESTapi implements RESTapi {
 
 	private static String allowOrigin = "Access-Control-Allow-Origin";
 	private static final Logger LOGGER = Logger.getLogger(ImplRESTapi.class.getName());
+	private static int cacheSize=200;
+	private static Map <String, String> cache = new LinkedHashMap<String, String>(cacheSize + 1, .75F, true) {
+
+		@Override
+        public boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+            return size() > cacheSize;
+        }
+    };
 
 	@Override
 	public Response getAllCubes() {
@@ -236,23 +244,30 @@ public class ImplRESTapi implements RESTapi {
 			LOGGER.log(Level.SEVERE, e.toString(), e);
 			return Response.serverError().build();
 		}
-		List<LDResource> dimensionValues = CubeSPARQL.getDimensionAttributeValues(dimensionURI, datasetURI,
-				sparqlservice);
-
-		DimensionAttributeValues jsonDimVal = new DimensionAttributeValues();
-		LDResource dimension = SPARQLUtil.getLabels(dimensionURI, sparqlservice);
-		jsonDimVal.setDimension(dimension);
-		jsonDimVal.setValues(dimensionValues);
 		
+		String cacheKey=datasetURI+dimensionURI;
+		String json=cache.get(cacheKey);
+		if(cache.get(cacheKey)==null){
+			List<LDResource> dimensionValues = CubeSPARQL.getDimensionAttributeValues(dimensionURI, datasetURI,
+					sparqlservice);
+	
+			DimensionAttributeValues jsonDimVal = new DimensionAttributeValues();
+			LDResource dimension = SPARQLUtil.getLabels(dimensionURI, sparqlservice);
+			jsonDimVal.setDimension(dimension);
+			jsonDimVal.setValues(dimensionValues);
+			
+			
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.VALUES));
+		    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
+		    gsonBuilder.setPrettyPrinting();
+		    Gson gson = gsonBuilder.create();	   
+		    
+		    // Format to JSON
+		    json= gson.toJson(jsonDimVal);
+		    cache.put(cacheKey, json);
+		}
 		
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(ArrayList.class, new ListSerializer(SerializationConstants.VALUES));
-	    gsonBuilder.registerTypeAdapter(LDResource.class, new LDResourceSerializer());
-	    gsonBuilder.setPrettyPrinting();
-	    Gson gson = gsonBuilder.create();	   
-	    
-	    // Format to JSON
-	    String json = gson.toJson(jsonDimVal);
 	    return Response.ok(json).header(allowOrigin, "*").build();
 
 	}

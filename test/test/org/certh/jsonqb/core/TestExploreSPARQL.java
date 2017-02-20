@@ -29,7 +29,7 @@ public class TestExploreSPARQL {
     @Test
 	public void testGetAllCubes() {
 		 List<LDResource> cubes= ExploreSPARQL.getAllCubes(SPARQLservice); 
-		 assertEquals(230,cubes.size());
+		 assertEquals(283,cubes.size());
 	}
     
     @Test
@@ -41,22 +41,22 @@ public class TestExploreSPARQL {
     @Test
 	public void testMaxAggregationSetCubes() {
 		 List<LDResource> maxAggregationSetCubes= ExploreSPARQL.getMaxAggregationSetCubes(SPARQLservice); 
-		 assertEquals(14,maxAggregationSetCubes.size());
+		 assertEquals(16,maxAggregationSetCubes.size());
 	}
     
     @Test
    	public void testMaxAggregationSetCubesAndCubesWithoutAggregation() {
    		 List<LDResource> maxAggregationSetCubesAndCubesWithoutAggregation= 
    				 ExploreSPARQL.getMaxAggregationSetCubesAndCubesWithoutAggregation(SPARQLservice); 
-   		 assertEquals(14,maxAggregationSetCubesAndCubesWithoutAggregation.size());
+   		 assertEquals(16,maxAggregationSetCubesAndCubesWithoutAggregation.size());
    	}
     
     @Test
    	public void testGetCubeOfAggregationSet() {
-    	String aggsetURI="http://opencube-project.eu/aggregationSet_3402807365941127147";
+    	String initialCube="http://id.vlaanderen.be/statistieken/dq/kubus-studieniveau-nwwz#id";
     	List<String> d=new ArrayList<String>();
     	d.add("http://id.vlaanderen.be/statistieken/def#refArea");
-    	LDResource cubeOfAggregationSet= ExploreSPARQL.getCubeOfAggregationSet(aggsetURI, d, SPARQLservice);
+    	LDResource cubeOfAggregationSet= ExploreSPARQL.getCubeOfAggregationSet(initialCube, d, SPARQLservice);
     	System.out.println(cubeOfAggregationSet.getURI());
    		assertNotNull(cubeOfAggregationSet);
    		String expectedCubeURI="http://id.vlaanderen.be/statistieken/dq/kubus-studieniveau-nwwz#id_refArea_6447896132624084171";

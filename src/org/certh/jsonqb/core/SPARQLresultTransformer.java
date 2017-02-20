@@ -39,6 +39,12 @@ public class SPARQLresultTransformer {
 			if (bindingSet.getValue(positionVal) != null) {
 				ldr.setOrder(Integer.valueOf(bindingSet.getValue(positionVal).stringValue()));
 			}
+			if(bindingSet.getValue("label")!=null){
+				ldr.addLabel((Literal) bindingSet.getValue("label"));
+			}
+			//remoe the previous LDResource (if exists)
+			listOfResources.remove(ldr);
+			//Add the new one with the updated labels, position
 			listOfResources.add(ldr);
 		}				
 		return listOfResources;
@@ -49,10 +55,12 @@ public class SPARQLresultTransformer {
 		List<LDResource> listofLabeledLDResourceList=new  ArrayList<>();
 		
 		for(LDResource ldr: listOfResources){
-			if (ldr.getLabels().isEmpty()){
+			if(ldr.getURI().contains("http://")&&ldr.getLabels().isEmpty()){
 				LDResource labeledLdr=SPARQLUtil.getLabels(ldr.getURI(), sparqlService);
 				listofLabeledLDResourceList.add(labeledLdr);
-			}
+			}else{
+				listofLabeledLDResourceList.add(ldr);
+			}			
 		}
 		
 		return listofLabeledLDResourceList;

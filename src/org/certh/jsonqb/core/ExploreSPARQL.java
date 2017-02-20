@@ -125,37 +125,41 @@ public class ExploreSPARQL {
 	public static LDResource getCubeOfAggregationSet(String cubeURI,
 			List<String> dimensions, String sparqlService){
 		
-		LDResource aggregationSen=CubeSPARQL.getAggregationSetOfCube(cubeURI, sparqlService);
-				
-		StringBuilder getCubeOfAggregationSetQuery =new StringBuilder(SPARQLconstants.PREFIX);
-		getCubeOfAggregationSetQuery.append("select  distinct ?res where {" 
-				+ "?res opencube:aggregationSet ?set."
-				+ "?res qb:structure ?dsd.");
+		LDResource aggregationSet=CubeSPARQL.getAggregationSetOfCube(cubeURI, sparqlService);
 		
-		int i=1;
-		for(String dim:dimensions){
-			getCubeOfAggregationSetQuery.append("?dsd qb:component ?cs"+i+".");
-			getCubeOfAggregationSetQuery.append("?cs"+i+" qb:dimension <"+dim+">.");
-			i++;
-		}
-		
-		getCubeOfAggregationSetQuery.append("{select ?res where{"
-						+ "?res opencube:aggregationSet <"+aggregationSen.getURI()+">."
-						+ "?res qb:structure ?dsd."
-						+ "?dsd qb:component ?comp."
-						+ "?comp qb:dimension ?dim."
-						+ "}group by ?res "
-						+ "having count(?dim)="+dimensions.size()+"}}");
-
-		TupleQueryResult res = QueryExecutor.executeSelect(getCubeOfAggregationSetQuery.toString(),
-				sparqlService);
-
-		List<LDResource> cubeOfAggregationSet = SPARQLresultTransformer.toLDResourceListWithLabels(res, sparqlService);
-		if (!cubeOfAggregationSet.isEmpty()){
-			return cubeOfAggregationSet.get(0);
+		if(aggregationSet!=null){
+			StringBuilder getCubeOfAggregationSetQuery =new StringBuilder(SPARQLconstants.PREFIX);
+			getCubeOfAggregationSetQuery.append("select  distinct ?res where {" 
+					+ "?res opencube:aggregationSet ?set."
+					+ "?res qb:structure ?dsd.");
+			
+			int i=1;
+			for(String dim:dimensions){
+				getCubeOfAggregationSetQuery.append("?dsd qb:component ?cs"+i+".");
+				getCubeOfAggregationSetQuery.append("?cs"+i+" qb:dimension <"+dim+">.");
+				i++;
+			}
+			
+			getCubeOfAggregationSetQuery.append("{select ?res where{"
+							+ "?res opencube:aggregationSet <"+aggregationSet.getURI()+">."
+							+ "?res qb:structure ?dsd."
+							+ "?dsd qb:component ?comp."
+							+ "?comp qb:dimension ?dim."
+							+ "}group by ?res "
+							+ "having count(?dim)="+dimensions.size()+"}}");
+	
+			TupleQueryResult res = QueryExecutor.executeSelect(getCubeOfAggregationSetQuery.toString(),
+					sparqlService);
+	
+			List<LDResource> cubeOfAggregationSet = SPARQLresultTransformer.toLDResourceListWithLabels(res, sparqlService);
+			if (!cubeOfAggregationSet.isEmpty()){
+				return cubeOfAggregationSet.get(0);
+			}else{
+				return null;
+			}	
 		}else{
 			return null;
-		}		
+		}
 	}
 
 }
