@@ -318,10 +318,20 @@ public class SPARQLresultTransformer {
 			BindingSet bindingSet = res.next();
 			Observation obs = new Observation();
 			for (Map.Entry<String, String> entry : mapVariableNameURI.entrySet()) {
-				Value v=bindingSet.getValue(entry.getKey());
+				//The SPARQL variable name e.g. val1, val2, measure1
+				String key=entry.getKey();
+				Value v=bindingSet.getValue(key);
 				String value="";
 				if(v!=null){
 					value=v.stringValue();
+
+				//if valX is empty check dimX e.g. for predicates that are String -> sdmx-dimension:refPeriod  "2015"^^xsd:gYear ;
+				}else if(key.startsWith("val")){
+					String dimval="dim"+key.substring(key.length() - 1);
+					v=bindingSet.getValue(dimval);
+					if(v!=null){
+						value=v.stringValue();
+					}
 				}
 				
 				obs.putObservationValue(entry.getValue(), value);

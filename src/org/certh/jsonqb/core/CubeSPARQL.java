@@ -188,7 +188,7 @@ public class CubeSPARQL {
 		int i = 1;
 		// Add dimensions ?dim to SPARQL query
 		for (String vDim : visualDims) {
-			getSliceQuery.append("?val" + i + " ");
+			getSliceQuery.append("?val" + i + " "+"?dim"+i+" ");
 			
 			//Find the LDResource dimension
 			for(LDResource dim:dimensions){
@@ -258,9 +258,9 @@ public class CubeSPARQL {
 		// Add free dimensions to where clause
 		for (String vDim : visualDims) {
 			if("URI".equals(mode)){
-				getSliceQuery.append("?obs <" + vDim + "> " + "?val" + i + ". ");
+				getSliceQuery.append("OPTIONAL{?obs <" + vDim + "> " + "?val" + i + "}");
 			}else{
-				getSliceQuery.append("?obs <" + vDim + "> " + "?dim" + i + ". "
+				getSliceQuery.append("OPTIONAL{?obs <" + vDim + "> " + "?dim" + i + "} "
 						+ "OPTIONAL{?dim"+ i +" skos:prefLabel|rdfs:label ?val"+i+". }");
 			}
 			
