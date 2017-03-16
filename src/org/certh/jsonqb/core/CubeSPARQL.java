@@ -264,7 +264,7 @@ public class CubeSPARQL {
 
 		i = 1;
 		for (String meas : selectedMeasures) {
-			getSliceQuery.append("?obs  <" + meas + "> ?measure" + i + ".");
+			getSliceQuery.append("OPTIONAL{?obs  <" + meas + "> ?measure" + i + ".}");
 			i++;
 		}
 
@@ -292,7 +292,7 @@ public class CubeSPARQL {
 		getTableQuery.append("Select distinct ");
 		
 		
-		//�dd visual dims to SPARQL query
+		//Add visual dims to SPARQL query
 		for (int j=1;j<=visualDims.size();j++) {
 			getTableQuery.append("?dim" + j + " ");			
 		}		

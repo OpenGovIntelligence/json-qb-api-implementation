@@ -283,8 +283,7 @@ public class SPARQLresultTransformer {
 					//Row major order
 					obsIndex=rowDimValues.indexOf(obsRowVal);
 				}
-				
-				
+								
 				//NEED TO SUPPORT MULTIPLE MEASURES
 				for (String meas : measures) {
 					listOfNumbers[obsIndex]= Double.parseDouble(obs.getObservationValues().get(meas));
@@ -331,7 +330,6 @@ public class SPARQLresultTransformer {
 					v=bindingSet.getValue(dimval);
 					if(v!=null){
 						LDResource dimldr=new LDResource(v.stringValue());
-						//value=v.stringValue();
 						value=dimldr.getLabel(null);
 					}
 				}
