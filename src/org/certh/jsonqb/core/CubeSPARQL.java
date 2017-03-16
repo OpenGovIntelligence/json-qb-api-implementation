@@ -188,7 +188,11 @@ public class CubeSPARQL {
 		int i = 1;
 		// Add dimensions ?dim to SPARQL query
 		for (String vDim : visualDims) {
-			getSliceQuery.append("?val" + i + " "+"?dim"+i+" ");
+			getSliceQuery.append("?val" + i+" ");
+			
+			if("label".equals(mode)){
+				getSliceQuery.append("?dim"+i+" ");
+			}
 			
 			//Find the LDResource dimension
 			for(LDResource dim:dimensions){
@@ -231,19 +235,10 @@ public class CubeSPARQL {
 		// Select observations of a specific cube (cubeURI)
 		getSliceQuery.append(" where { ?obs qb:dataSet <" + cubeURI + ">.");
 
-		// Add fixed dimensions to where clause
+		
 		i = 1;
-		//for (Map.Entry<String, String> entry : fixedDims.entrySet()) {
-		//	getSliceQuery.append("?obs <" + entry.getKey() + "> ");
-		//	if (entry.getValue().contains("http")) {
-		//		getSliceQuery.append("<" + entry.getValue() + ">.");
-		//	} else {
-		//		getSliceQuery.append("?value" + i + "." + "FILTER(STR(?value" + i + ")='" + entry.getValue() + "')");
-		//	}
-		//	i++;
-		//}
-		
-		
+			
+		// Add fixed dimensions to where clause
 		for (Entry<String, String> fDimEntry : fixedDims.entrySet()) {
 			getSliceQuery.append("?obs <" + fDimEntry.getKey() + "> ");
 			if (fDimEntry.getValue().contains("http")) {

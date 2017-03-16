@@ -330,7 +330,9 @@ public class SPARQLresultTransformer {
 					String dimval="dim"+key.substring(key.length() - 1);
 					v=bindingSet.getValue(dimval);
 					if(v!=null){
-						value=v.stringValue();
+						LDResource dimldr=new LDResource(v.stringValue());
+						//value=v.stringValue();
+						value=dimldr.getLabel(null);
 					}
 				}
 				
