@@ -8,7 +8,7 @@ Implements the JSON-qb API specification. It aims to provide an easy to use API 
 
 Parameter: none
 
-Description: Returns all the available cubes of an RDF repository
+Description: returns all the available cubes of an RDF repository (including the aggregated cubes created by the Data Cube Aggregator)
 
 Example request:
 
@@ -40,6 +40,8 @@ Example result
 
 Parameter: none
 
+Description: returns only the initial cubes, not including the aggregated cubes created by the Data Cube Aggregator
+
 Example request:
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes)
@@ -67,9 +69,24 @@ Example result
 
 ## Aggregations
 
+### GET create-aggregations
+
+Parameters:
+* dataset (required)
+* A mapping of each cube measure with an aggregation function (supported functions: AVG, SUM, MIN, MAX, COUNT)
+
+Description: computes aggregations of existing cubes using the specified aggregate functions. All possible dimension combinations are used to create aggregations. For example if a cube has three dimensions (e.g. time, geographical location, sex) the Data Cube Aggregator will compute aggregations and create new cubes with one and two dimensions based on the original cube’s observations. 
+
+
+Example request: http://localhost:8080/JSON-QB-REST-API/create-aggregations?dataset=http://id.mkm.ee/statistics/def/cube/crashes&http://id.mkm.ee/statistics/def/measure/total_cost=SUM&http://id.mkm.ee/statistics/def/measure/average_cost=AVG&http://id.mkm.ee/statistics/def/measure/number_of_crashes=SUM
+
 ### GET cubeOfAggregationSet
 
-Parameter: dataset (required), 1 ore more free dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
+Parameters:
+* dataset (required)
+* 1 ore more free dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
+
+Description: returns the cube of an aggregation set that has the specified dimensions
 
 Example request:
 
@@ -112,6 +129,8 @@ Example result
 
 Parameter: dataset (required)
 
+Description: returns all the dimensions of a cube
+
 Example request:
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
@@ -145,6 +164,8 @@ Example result
 
 Parameter: dataset (required)
 
+Description: returns all the attributes of a cube
+
 Example request:
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
@@ -166,6 +187,8 @@ Example result
 
 Parameter: dataset (required)
 
+Description: returns all the measures of a cube
+
 Example request:
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
@@ -186,6 +209,8 @@ Example result
 ### GET dimension-values
 
 Parameter: dataset (required), dimension (required)
+
+Description: returns all the values of a dimension that appear at a specific cube
 
 Example request:
 
@@ -224,6 +249,8 @@ Example result
 
 Parameter: dataset (required), attribute (required)
 
+Description: returns all the values of an attribute that appear at a specific cube
+
 Example request:
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure)
@@ -253,6 +280,8 @@ Example result
 ### GET dimension-levels
 
 Parameter: dataset (required), dimension (required)
+
+Description: returns all the levels of dimension values (in case of hierarchical data) that appear at a specific cube
 
 Example request:
 
@@ -290,6 +319,8 @@ Parameters:
 * 0 or more fixed dimension identifiers (optional), 
 * mode= URI | label (optional) - if no mode is defined then labels are returned
 * limit = NUMBER (e.g. limit=100) (optional)
+
+Description: returns a set of observations of the specified cube, that match to the specified fixed dimensions
   
 Example request 1:
 
@@ -370,6 +401,8 @@ Parameter:
 * 0 ore more col as array i.e. col[]=DIM3 & col[]=DIM4 (optional)           
 * 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional) - if no measures defined ALL are returned         
 * 0 or more fixed dimension identifiers (optional)
+
+Description: returns a 2D table representation of the cube’s observations that match to the specified fixed dimensions
 
 NOTE: currenlty the API supports maximum 1 row and 1 col. Need to update to support more!!!
 
