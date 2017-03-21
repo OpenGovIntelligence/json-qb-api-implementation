@@ -78,7 +78,9 @@ Parameters:
 Description: computes aggregations of existing cubes using the specified aggregate functions. All possible dimension combinations are used to create aggregations. For example if a cube has three dimensions (e.g. time, geographical location, sex) the Data Cube Aggregator will compute aggregations and create new cubes with one and two dimensions based on the original cube’s observations. 
 
 
-Example request: http://localhost:8080/JSON-QB-REST-API/create-aggregations?dataset=http://id.mkm.ee/statistics/def/cube/crashes&http://id.mkm.ee/statistics/def/measure/total_cost=SUM&http://id.mkm.ee/statistics/def/measure/average_cost=AVG&http://id.mkm.ee/statistics/def/measure/number_of_crashes=SUM
+Example request: 
+
+GET http://localhost:8080/JSON-QB-REST-API/create-aggregations?dataset=http://id.mkm.ee/statistics/def/cube/crashes&http://id.mkm.ee/statistics/def/measure/total_cost=SUM&http://id.mkm.ee/statistics/def/measure/average_cost=AVG&http://id.mkm.ee/statistics/def/measure/number_of_crashes=SUM
 
 ### GET cubeOfAggregationSet
 
@@ -208,7 +210,9 @@ Example result
 
 ### GET dimension-values
 
-Parameter: dataset (required), dimension (required)
+Parameters:
+* dataset (required)
+* dimension (required)
 
 Description: returns all the values of a dimension that appear at a specific cube
 
@@ -247,7 +251,9 @@ Example result
 
 ### GET attribute-values
 
-Parameter: dataset (required), attribute (required)
+Parameters:
+* dataset (required)
+* attribute (required)
 
 Description: returns all the values of an attribute that appear at a specific cube
 
@@ -279,7 +285,9 @@ Example result
 
 ### GET dimension-levels
 
-Parameter: dataset (required), dimension (required)
+Parameters:
+* dataset (required)
+* dimension (required)
 
 Description: returns all the levels of dimension values (in case of hierarchical data) that appear at a specific cube
 
