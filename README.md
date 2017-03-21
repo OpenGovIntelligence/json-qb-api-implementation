@@ -8,6 +8,8 @@ Implements the JSON-qb API specification. It aims to provide an easy to use API 
 
 Parameter: none
 
+Description: Returns all the available cubes of an RDF repository
+
 Example request:
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubes)
@@ -63,7 +65,7 @@ Example result
 }
 ```
 
-##Aggregations
+## Aggregations
 
 ### GET cubeOfAggregationSet
 
