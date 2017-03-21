@@ -2,7 +2,7 @@
 
 Implements the JSON-qb API specification. It aims to provide an easy to use API for developers that reuse statistical data stored in the form of RDF Data cubes. The API implementation can be installed on top of any RDF repository and offer basic and advanced operations on RDF Data Cubes.
 
-## API Description
+## Explore cubes
 
 ### GET cubes
 
@@ -63,6 +63,8 @@ Example result
 }
 ```
 
+##Aggregations
+
 ### GET cubeOfAggregationSet
 
 Parameter: dataset (required), 1 ore more free dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
@@ -79,6 +81,7 @@ Example result
   "label": "Employment (Scottish)"
 }
 ```
+## Cube metadata
 
 ### GET dataset-metadata
 
@@ -274,7 +277,7 @@ Example result
 }
 ```
 
-
+## Cube data
 
 
 ### GET slice
