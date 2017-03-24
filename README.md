@@ -135,7 +135,7 @@ Description: returns all the dimensions of a cube
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://id.mkm.ee/statistics/def/cube/buildings](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://id.mkm.ee/statistics/def/cube/buildings)
 
 Example result
 
