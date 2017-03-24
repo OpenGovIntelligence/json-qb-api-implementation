@@ -525,88 +525,68 @@ Example result
 
 Example 1D table request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&http://id.vlaanderen.be/statistieken/def%23refArea=http://statistics.gov.scot/id/statistical-geography/S12000033](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&http://id.vlaanderen.be/statistieken/def%23refArea=http://statistics.gov.scot/id/statistical-geography/S12000033)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mkm.ee/statistics/def/cube/crashes_day_time&measure%5B%5D=http://id.mkm.ee/statistics/def/measure/number_of_crashes&row%5B%5D=http://id.mkm.ee/statistics/def/dimension/day&http://id.mkm.ee/statistics/def/dimension/time=http://id.mkm.ee/statistics/concept/time/21](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mkm.ee/statistics/def/cube/crashes_day_time&measure%5B%5D=http://id.mkm.ee/statistics/def/measure/number_of_crashes&row%5B%5D=http://id.mkm.ee/statistics/def/dimension/day&http://id.mkm.ee/statistics/def/dimension/time=http://id.mkm.ee/statistics/concept/time/21)
 
 Example result:
 ```
 {
   "structure": {
     "free_dimensions": {
-      "timePeriod": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-        "label": "Period of time"
+      "day": {
+        "@id": "http://id.mkm.ee/statistics/def/dimension/day",
+        "label": "Day"
       }
     },
     "locked_dimensions": {
-      "sex": {
-        "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
-        "label": "Geslacht",
+      "time": {
+        "@id": "http://id.mkm.ee/statistics/def/dimension/time",
+        "label": "Time",
         "locked_value": {
-          "@id": "http://purl.org/linked-data/sdmx/2009/code#sex-F",
-          "label": "sex-F"
-        }
-      },
-      "leeftijdsgroep": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
-        "label": "Age group",
-        "locked_value": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49#id",
-          "label": "35-49"
-        }
-      },
-      "refArea": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-        "label": "Reference Area",
-        "locked_value": {
-          "@id": "http://statistics.gov.scot/id/statistical-geography/S12000033",
-          "label": "Aberdeen City"
+          "@id": "http://id.mkm.ee/statistics/concept/time/21",
+          "label": "21:00"
         }
       }
     },
     "dimension_values": {
-      "timePeriod": {
-        "jaar_2004": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-          "label": "2004"
+      "day": {
+        "Friday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Friday",
+          "label": "Friday"
         },
-        "jaar_2005": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2005#id",
-          "label": "2005"
+        "Monday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Monday",
+          "label": "Monday"
         },
-        "jaar_2006": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2006#id",
-          "label": "2006"
+        "Saturday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Saturday",
+          "label": "Saturday"
         },
-        "jaar_2007": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2007#id",
-          "label": "2007"
+        "Sunday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Sunday",
+          "label": "Sunday"
         },
-        "jaar_2008": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2008#id",
-          "label": "2008"
+        "Thursday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Thursday",
+          "label": "Thursday"
         },
-        "jaar_2009": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2009#id",
-          "label": "2009"
+        "Tuesday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Tuesday",
+          "label": "Tuesday"
         },
-        "jaar_2010": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2010#id",
-          "label": "2010"
-        },
-        "jaar_2011": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2011#id",
-          "label": "2011"
+        "Wednesday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Wednesday",
+          "label": "Wednesday"
         }
       }
     }
   },
   "headers": {
-    "rows": {"timePeriod": ["jaar_2004","jaar_2005","jaar_2006","jaar_2007","jaar_2008","jaar_2009", "jaar_2010", "jaar_2011"   ]
+    "rows": {
+      "day": ["Friday", "Monday", "Saturday", "Sunday", "Thursday", "Tuesday", "Wednesday" ]
     }
   },
-  "data": [73.4, 76.6, 77.8, 79.6, 82.0, 75.5, 76.3, 80.2]
+  "data": [860.0, 918.0, 902.0, 30.0, 1038.0, 288.0, 1324.0 ]
 }
-
 ```
 
 
