@@ -170,7 +170,7 @@ Description: returns all the attributes of a cube
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://id.mkm.ee/statistics/def/cube/crashes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?datasetet=http://id.mkm.ee/statistics/def/cube/crashes)
 
 Example result
 
@@ -178,8 +178,8 @@ Example result
 {
   "attributes": [
     {
-      "@id": "http://statistics.gov.scot/def/concept/measure-units/ratio",
-      "label": "ratio"
+      "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+      "label": "Unit of measure"
     }
   ]
 }
@@ -193,7 +193,7 @@ Description: returns all the measures of a cube
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://id.mkm.ee/statistics/def/cube/crashes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://id.mkm.ee/statistics/def/cube/crashes)
 
 Example result
 
@@ -201,8 +201,16 @@ Example result
 {
   "measures": [
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad",
-      "label": "aantal werkzaamheidsgraad"
+      "@id": "http://id.mkm.ee/statistics/def/measure/average_cost",
+      "label": "Average Cost"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/def/measure/number_of_crashes",
+      "label": "Number of crashes"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/def/measure/total_cost",
+      "label": "Total Cost"
     }
   ]
 }
@@ -218,7 +226,7 @@ Description: returns all the values of a dimension that appear at a specific cub
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23timePeriod](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23timePeriod)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&dimension=http://id.mkm.ee/statistics/def/dimension/day](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&dimension=http://id.mkm.ee/statistics/def/dimension/day)
 
 Example result
 
@@ -226,25 +234,37 @@ Example result
 {
   "values": [
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2008#id",
-      "label": "2008"
+      "@id": "http://id.mkm.ee/statistics/concept/day/Friday",
+      "label": "Friday"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2009#id",
-      "label": "2009"
+      "@id": "http://id.mkm.ee/statistics/concept/day/Monday",
+      "label": "Monday"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2010#id",
-      "label": "2010"
+      "@id": "http://id.mkm.ee/statistics/concept/day/Saturday",
+      "label": "Saturday"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2011#id",
-      "label": "2011"
-    }, ...
+      "@id": "http://id.mkm.ee/statistics/concept/day/Sunday",
+      "label": "Sunday"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/concept/day/Thursday",
+      "label": "Thursday"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/concept/day/Tuesday",
+      "label": "Tuesday"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/concept/day/Wednesday",
+      "label": "Wednesday"
+    }
   ],
   "dimension": {
-    "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-    "label": "Period of time"
+    "@id": "http://id.mkm.ee/statistics/def/dimension/day",
+    "label": "Day"
   }
 }
 ```
@@ -259,7 +279,7 @@ Description: returns all the values of an attribute that appear at a specific cu
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&attribute=http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&attribute=http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure)
 
 Example result
 
@@ -267,13 +287,9 @@ Example result
 {
   "values": [
     {
-      "@id": "http://statistics.gov.scot/def/concept/measure-units/people",
-      "label": "people"
-    },
-    {
-      "@id": "http://statistics.gov.scot/def/concept/measure-units/percentage-of-population",
-      "label": "percentage-of-population"
-    }
+      "@id": "http://qudt.org/1.1/vocab/unit#Number",
+      "label": "Number"
+    }    
   ],
   "dimension": {
     "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
@@ -293,7 +309,7 @@ Description: returns all the levels of dimension values (in case of hierarchical
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23refArea](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23refArea)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen%23id&dimension=http://id.vlaanderen.be/statistieken/def%23refArea](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen%23id&dimension=http://id.vlaanderen.be/statistieken/def%23refArea)
 
 Example result
 
@@ -302,16 +318,24 @@ Example result
   "values": [
     {
       "@id": "http://id.fedstats.be/classificationlevel/province#id",
-      "label": "Provincie"
+      "label": "Province"
+    },
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/municipality#id",
+      "label": "Municipality"
     },
     {
       "@id": "http://id.fedstats.be/classificationlevel/region#id",
-      "label": "Région"
+      "label": "Region"
+    },
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/district#id",
+      "label": "District"
     }
   ],
   "dimension": {
     "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-    "label": "Reference Area"
+    "label": "Reference area"
   }
 }
 ```
