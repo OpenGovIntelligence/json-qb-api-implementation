@@ -92,14 +92,14 @@ Description: returns the cube of an aggregation set that has the specified dimen
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension[]=http://purl.org/linked-data/sdmx/2009/dimension%23sex&dimension[]=http://id.vlaanderen.be/statistieken/def%23timePeriod](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension[]=http://purl.org/linked-data/sdmx/2009/dimension%23sex&dimension[]=http://id.vlaanderen.be/statistieken/def%23timePeriod)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://id.mkm.ee/statistics/def/cube/buildings&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/main_usage&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/municipality](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://id.mkm.ee/statistics/def/cube/buildings&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/main_usage&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/municipality)
 
 Example result
 
 ```
 {
-  "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment_timePeriod_sex_3493111948015600912",
-  "label": "Employment (Scottish)"
+  "@id": "http://id.mkm.ee/statistics/def/cube/buildings_main_usage_municipality",
+  "label": "Buildings Cube(main_usage,municipality)"
 }
 ```
 ## Cube metadata
