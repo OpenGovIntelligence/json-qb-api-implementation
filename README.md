@@ -356,70 +356,84 @@ Description: returns a set of observations of the specified cube, that match to 
   
 Example request 1:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&limit=100&mode=label](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&limit=100&mode=label)      
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&limit=100&mode=label](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&limit=100&mode=label)      
 
 Example result 1:
 
   ```
-  {
+ {
   "observations": [
     {
-      "Age group": "16-24",
-      "Geslacht": "",
-      "Period of time": "2004",
-      "Reference area": "Clackmannanshire",
-      "employment rate": "62.7",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+      "Average Cost": "1182",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "5",
+      "Time": "No available time",
+      "Total Cost": "5908",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/1"
     },
     {
-      "Age group": "16-24",
-      "Geslacht": "",
-      "Period of time": "2004",
-      "Reference area": "Clackmannanshire",
-      "employment rate": "62.7",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+      "Average Cost": "400",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "1",
+      "Time": "24:00",
+      "Total Cost": "400",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/2"
     },
     {
-      "Age group": "16-24",
-      "Geslacht": "",
-      "Period of time": "2005",
-      "Reference area": "Clackmannanshire",
-      "employment rate": "61.2",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2005/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+      "Average Cost": "627",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "1",
+      "Time": "21:00",
+      "Total Cost": "627",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/3"
     },
+    {
+      "Average Cost": "733",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "2",
+      "Time": "20:00",
+      "Total Cost": "1465",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/4"
+    }, ...
+  ]
+ }
   ```
      
 Example request 2:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&mode=URI](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&mode=URI)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&measure[]=http://id.mkm.ee/statistics/def/measure/average_cost&http://id.mkm.ee/statistics/def/dimension/day=http://id.mkm.ee/statistics/concept/day/Friday&limit=100&mode=URI](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&measure[]=http://id.mkm.ee/statistics/def/measure/average_cost&http://id.mkm.ee/statistics/def/dimension/day=http://id.mkm.ee/statistics/concept/day/Friday&limit=100&mode=URI)
 
 Example result 2:
 ```
 {
   "observations": [
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000005",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "79.1",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/notime",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "868",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/48"
     },
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000006",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "84.8",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000006/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/24",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "515",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/49"
     },
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000008",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "78.2",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000008/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/23",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "1500",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/50"
     },
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000010",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "77.9",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000010/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/21",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "282",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/51"
     },...
   ]
 }
