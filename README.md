@@ -143,20 +143,20 @@ Example result
 {
   "dimensions": [
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
-      "label": "Age group"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/main_usage",
+      "label": "Main Usage"
     },
     {
-      "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
-      "label": "Geslacht"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/municipality",
+      "label": "Municipality"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-      "label": "Period of time"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/property_type",
+      "label": "Property Type"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-      "label": "Reference Area"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/status",
+      "label": "Status of Building"
     }
   ]
 }
