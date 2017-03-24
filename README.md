@@ -454,73 +454,102 @@ NOTE: currenlty the API supports maximum 1 row and 1 col. Need to update to supp
 
 Example 2D table request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col[]=http://id.vlaanderen.be/statistieken/def%23refArea&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col[]=http://id.vlaanderen.be/statistieken/def%23refArea&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mareg.gr/statistics/def/cube/vehicles_area_fuel_type_vehicle_type&measure%5B%5D=http://id.mareg.gr/statistics/def/measure/number_of_vehicles&row%5B%5D=http://id.mareg.gr/statistics/def/dimension/fuel_type&col%5B%5D=http://id.mareg.gr/statistics/def/dimension/vehicle_type&http://id.mareg.gr/statistics/def/dimension/area=http://195.251.218.39:8080/id/9186](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mareg.gr/statistics/def/cube/vehicles_area_fuel_type_vehicle_type&measure%5B%5D=http://id.mareg.gr/statistics/def/measure/number_of_vehicles&row%5B%5D=http://id.mareg.gr/statistics/def/dimension/fuel_type&col%5B%5D=http://id.mareg.gr/statistics/def/dimension/vehicle_type&http://id.mareg.gr/statistics/def/dimension/area=http://195.251.218.39:8080/id/9186)
 
 Example result
 ```
 {
   "structure": {
     "free_dimensions": {
-      "timePeriod": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-        "label": "Period of time"
+      "fuel_type": {
+        "@id": "http://id.mareg.gr/statistics/def/dimension/fuel_type",
+        "label": "Fuel Type"
       },
-      "refArea": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-        "label": "Reference Area"
+      "vehicle_type": {
+        "@id": "http://id.mareg.gr/statistics/def/dimension/vehicle_type",
+        "label": "Vehicle Type"
       }
     },
     "locked_dimensions": {
-      "sex": {
-        "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
-        "label": "Geslacht",
+      "area": {
+        "@id": "http://id.mareg.gr/statistics/def/dimension/area",
+        "label": "Area",
         "locked_value": {
-          "@id": "http://purl.org/linked-data/sdmx/2009/code#sex-F",
-          "label": "sex-F"
-        }
-      },
-      "leeftijdsgroep": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
-        "label": "Age group",
-        "locked_value": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49#id",
-          "label": "35-49"
+          "@id": "http://195.251.218.39:8080/id/9186",
+          "label": "Municipality of Athens"
         }
       }
     },
     "dimension_values": {
-      "refArea": {
-        "S12000033": {
-          "@id": "http://statistics.gov.scot/id/statistical-geography/S12000033",
-          "label": "Aberdeen City"
+      "vehicle_type": {
+        "Leoforio": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/Leoforio",
+          "label": "Bus"
         },
-        "S12000034": {
-          "@id": "http://statistics.gov.scot/id/statistical-geography/S12000034",
-          "label": "Aberdeenshire"
-        },...       
+        "Epivatiko": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/Epivatiko",
+          "label": "Car"
+        },
+        "EpivatikoMikto": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/EpivatikoMikto",
+          "label": "Car Mixed"
+        },
+        "Fortigo": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/Fortigo",
+          "label": "Goods Vehicle/Truck"
+        }, ...             
       },
-      "timePeriod": {
-        "jaar_2004": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-          "label": "2004"
+      "fuel_type": {
+        "Diesel": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Diesel",
+          "label": "Diesel"
         },
-        "jaar_2005": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2005#id",
-          "label": "2005"
-        },...     
+        "Diesel_Catalytic": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Diesel_Catalytic",
+          "label": "Diesel_Catalytic"
+        },
+        "Electric": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Electric",
+          "label": "Electric"
+        },
+        "Hybrid_petrol_electric": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Hybrid_petrol_electric",
+          "label": "Hybrid (petrol/electric)"
+        },
+        "Natural_Gas": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Natural_Gas",
+          "label": "Natural Gas"
+        },
+        "Nofuel": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Nofuel",
+          "label": "Nofuel"
+        },
+        "Petrol": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Petrol",
+          "label": "Petrol"
+        }, ...        
       }
     }
   },
   "headers": {
     "columns": {
-      "refArea": ["S12000033", "S12000034", "S12000041","S12000035","S12000036","S12000005","S12000013",... ]
+      "vehicle_type": ["Leoforio", "Epivatiko", "EpivatikoMikto", "Fortigo", ... ]
     },
-    "rows": {"timePeriod": ["jaar_2004", "jaar_2005","jaar_2006","jaar_2007", "jaar_2008","jaar_2009", "jaar_2010","jaar_2011"]
+    "rows": {
+      "fuel_type": ["Diesel", "Diesel_Catalytic", "Electric", "Hybrid_petrol_electric", "Natural_Gas", "Nofuel", "Petrol", ...  ]
     }
   },
-  "data": [[73.4,79.6, 77.6, 78.3, 74.4, 79.1, 82.8, ...], [76.6,78.8, 74.5, 84.3, 80.0, 76.4, 89.3,...],...]
- }
-
+  "data": [
+    [158.0, 160.0, null, 900.0, ... ],
+    [  7.0,  33.0,  1.0, 202.0, ... ],
+    [ null,   2.0, null,  null, ... ],
+    [ null,  15.0, null,  null, ... ],
+    [ null,  null, null,  33.0, ... ],
+    [  5.0,   1.0, null, 155.0, ... ],
+    [ 25.0, 403.0, null, 681.0,     ],
+    ...
+  ]
+}
 ```
 
 Example 1D table request:
