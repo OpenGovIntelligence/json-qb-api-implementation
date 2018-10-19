@@ -13,6 +13,8 @@ import org.certh.jsonqb.datamodel.QBTable;
 import org.certh.jsonqb.datamodel.QBTableJsonStat;
 import org.certh.jsonqb.util.ObservationList;
 import org.certh.jsonqb.util.SPARQLUtil;
+import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 
 public class CubeSPARQL {
@@ -109,6 +111,26 @@ public class CubeSPARQL {
 		Collections.sort(dimensionValuesWithLables, LDResource.labelComparator);
 		return dimensionValuesWithLables;
 	}
+	
+	public static LDResource getDimensionCodesUsedCodelist(String dimensionURI, String cubeURI,
+			String sparqlService) {
+
+			String getDimensionCodesUsedCodelistQuery = SPARQLconstants.PREFIX
+				+ "select  ?codesUsedList where {"
+				+ "<"+cubeURI+"> qb:structure/qb:component ?comp."
+				+ "?comp qb:dimension <"+dimensionURI+">."
+				+ "?comp <"+SPARQLconstants.CODESUSED_PREDICATE+"> ?codesUsedList."
+				+ "}";			
+
+		TupleQueryResult res = QueryExecutor.executeSelect(getDimensionCodesUsedCodelistQuery, sparqlService);
+		LDResource ldr =null;
+		if(res.hasNext()) {
+			BindingSet bindingSet = res.next();
+			ldr = new LDResource(bindingSet.getValue("codesUsedList").stringValue());	
+		}		
+		
+		return ldr;
+	}
 
 	// Ordered List of ALL Dimension Levels
 	public static List<LDResource> getDimensionLevels(String dimensionURI, String sparqlService) {
@@ -129,10 +151,15 @@ public class CubeSPARQL {
 	// (check if exists an observation with this value)
 	public static boolean cubeContainsDimensionLevel(String cubeURI, String dimensionLevel, String sparqlService) {
 		String askDimensionLevelInDataCubeQuery = SPARQLconstants.PREFIX
-				+ "ASK where{?obs qb:dataSet <" + cubeURI+ ">." 
-				+ "?obs ?dim ?value." 
-				+ "<" + dimensionLevel + "> skos:member ?value.}";
-		return QueryExecutor.executeASK(askDimensionLevelInDataCubeQuery, sparqlService);
+			+ "SELECT ?exists where{"
+			+ "?obs qb:dataSet <" + cubeURI+ ">."
+			+ "?obs ?dim ?value."
+			+ "BIND(EXISTS{ <" + dimensionLevel + "> skos:member ?value.})}";
+					
+		TupleQueryResult res = QueryExecutor.executeSelect(askDimensionLevelInDataCubeQuery, sparqlService);
+		BindingSet bindingSet = res.next();
+		Literal existsStr=(Literal) bindingSet.getValue("exists");
+		return existsStr.booleanValue();			
 	}
 
 	// Ordered List of Cube Dimension Levels

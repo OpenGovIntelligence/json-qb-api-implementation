@@ -7,6 +7,8 @@ import org.certh.jsonqb.core.QueryExecutor;
 import org.certh.jsonqb.core.SPARQLconstants;
 import org.certh.jsonqb.core.SPARQLresultTransformer;
 import org.certh.jsonqb.datamodel.LDResource;
+import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 
 public class SPARQLUtil {
@@ -34,16 +36,23 @@ public class SPARQLUtil {
 		boolean uriExist=true;
 		String createdURI="";
 					
-		//Check if the AggregationSet URI already exists
+		//Check if the URI already exists
 		while(uriExist){
 			long rnd = rand.nextLong();
 			createdURI = uriPrefix+"_"+ rnd;
-			String askURIExist= SPARQLconstants.PREFIX 
-					+ "ASK "
-					+ "FROM <"+graph+">"
-							+ " where {<"+createdURI+"> rdf:type opencube:aggregationSet.}";
-			uriExist=QueryExecutor.executeASK(askURIExist, sparqlService);
+			String askURIExist= SPARQLconstants.PREFIX
+					+ "SELECT ?exists where{"
+					+ "?x a ?y."
+					+ "BIND(EXISTS{<"+createdURI+"> rdf:type ?z.} AS ?exists)}"
+							+ "LIMIT 1";
+			
+			TupleQueryResult res = QueryExecutor.executeSelect(askURIExist, sparqlService);
+			BindingSet bindingSet = res.next();
+			Literal existsStr=(Literal) bindingSet.getValue("exists");
+			uriExist=existsStr.booleanValue();
 		}
+			
+		
 		return createdURI;
 	}		
 	

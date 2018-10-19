@@ -13,6 +13,7 @@ import org.certh.jsonqb.datamodel.LDResource;
 import org.certh.jsonqb.datamodel.Label;
 import org.certh.jsonqb.util.StringUtil;
 import org.certh.jsonqb.util.SPARQLUtil;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 
@@ -148,11 +149,34 @@ public class AggregateSPARQL {
 				+ "<"+newDsdURI  + "> rdf:type qb:DataStructureDefinition.");
 
 		// Add dimensions to DSD
+		// And attach a code list to componentSpecification with the codesUsed
 		int i=1;
 		for (String dim : dimensions) {
 			String newComponentSpecificationURI = newCubeURI+"/componentSpecification_"+ i;
 			createNewDsdQuery.append( "<"+newDsdURI + "> qb:component <" + newComponentSpecificationURI + ">."
 					+ "<"+newComponentSpecificationURI + "> qb:dimension <"	+ dim + ">.");
+			
+						
+			LDResource codesUsedCodelist=CubeSPARQL.getDimensionCodesUsedCodelist(dim, originalCubeURI, sparqlService);
+			//If the original cube has a codesUsed codelist use it at the Aggregated Cube
+			if(codesUsedCodelist!=null) {
+				createNewDsdQuery.append( "<"+newComponentSpecificationURI+ "> <"+
+						SPARQLconstants.CODESUSED_PREDICATE +"> <"+codesUsedCodelist.getURI()+">.");
+			}
+			
+			/*else {
+				String newCodesUsedCodelistURI= newCubeURI+"/codes-used_"+i+"/";
+				createNewDsdQuery.append( "<"+newComponentSpecificationURI+ "> <"+
+							SPARQLconstants.CODESUSED_PREDICATE +"> <"+newCodesUsedCodelistURI+">.");
+				createNewDsdQuery.append( "<"+newCodesUsedCodelistURI+ "> a skos:Collection."); 
+				
+				List<LDResource> dimensionValues=CubeSPARQL.getDimensionAttributeValues(dim, originalCubeURI, sparqlService);
+				
+				for(LDResource ldr :dimensionValues) {
+					createNewDsdQuery.append( "<"+newCodesUsedCodelistURI+ "> skos:member <"+ldr.getURI()+">.");				
+				}
+			}*/
+			
 			i++;
 		}
 
@@ -168,6 +192,7 @@ public class AggregateSPARQL {
 		originalcubegraph.ifPresent(graph->createNewDsdQuery.append("}"));
 		
 		createNewDsdQuery.append("}");
+		System.out.println(createNewDsdQuery);
 
 		QueryExecutor.executeUPDATE(createNewDsdQuery.toString(),sparqlService);
 		
@@ -205,7 +230,7 @@ public class AggregateSPARQL {
 				
 		i=1;
 		for (String m : mapMeasureOperation.keySet()) {
-			aggregatedObservationsQuery.append("?obs <" + m + "> ?measure"+ i + ".");
+			aggregatedObservationsQuery.append("OPTIONAL {?obs <" + m + "> ?measure"+ i + ".}");
 			i++;
 		}
 
@@ -289,9 +314,11 @@ public class AggregateSPARQL {
 
 			i=1;
 			for (String m : measures) {
-				String measure = bindingSet.getValue("aggregatedMeasure"+i).stringValue();
-				addAggregatedObservations2Cube.append(newObservationURI + " <"+ m + "> "
-													+SPARQLUtil.toTripleValue(measure)+ ".");
+				Value measure=bindingSet.getValue("aggregatedMeasure"+i);
+				if(measure!=null) {
+					addAggregatedObservations2Cube.append(newObservationURI + " <"+ m + "> "
+													+SPARQLUtil.toTripleValue(measure.stringValue())+ ".");
+				}
 				i++;
 			}			
 

@@ -10,6 +10,8 @@ public class SPARQLconstants {
 			+ "PREFIX dct: <http://purl.org/dc/terms/> "
 			+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>";
 	
+	public static final String CODESUSED_PREDICATE="http://publishmydata.com/def/qb/codesUsed";
+	
 	private SPARQLconstants() {
 		 // Throw an exception if this ever *is* called
 	    throw new AssertionError("Instantiating utility class.");
