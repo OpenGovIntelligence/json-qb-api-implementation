@@ -1,12 +1,16 @@
 # JSON-qb REST API
 
-Implements the JSON-qb API specification. It aims to provide an easy to use API for developers that reuse statistical data stored in the form of RDF Data cubes. The API implementation can be installed on top of any RDF repository and offer basic and advanced operations on RDF Data Cubes.
+**NOTE: This work has been superseded by [CubiQL a GraphQL service for querying Linked Data Cubes](https://github.com/Swirrl/graphql-qb/).**
 
-## API Description
+Implements the [JSON-qb API specification](https://github.com/OpenGovIntelligence/json-qb). It aims to provide an easy to use API for developers that reuse statistical data stored in the form of RDF Data cubes. The API implementation can be installed on top of any RDF repository and offer basic and advanced operations on RDF Data Cubes.
+
+## Explore cubes
 
 ### GET cubes
 
 Parameter: none
+
+Description: returns all the available cubes of an RDF repository (including the aggregated cubes created by the Data Cube Aggregator)
 
 Example request:
 
@@ -38,6 +42,8 @@ Example result
 
 Parameter: none
 
+Description: returns only the initial cubes, not including the aggregated cubes created by the Data Cube Aggregator
+
 Example request:
 
 GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/aggregationSetcubes)
@@ -63,22 +69,42 @@ Example result
 }
 ```
 
+## Aggregations
+
+### GET create-aggregations
+
+Parameters:
+* dataset (required)
+* A mapping of each cube measure with an aggregation function (supported functions: AVG, SUM, MIN, MAX, COUNT)
+
+Description: computes aggregations of existing cubes using the specified aggregate functions. All possible dimension combinations are used to create aggregations. For example if a cube has three dimensions (e.g. time, geographical location, sex) the Data Cube Aggregator will compute aggregations and create new cubes with one and two dimensions based on the original cube’s observations. 
+
+
+Example request: 
+
+GET http://localhost:8080/JSON-QB-REST-API/create-aggregations?dataset=http://id.mkm.ee/statistics/crashes&http://id.mkm.ee/statistics/def/measure/total_cost=SUM&http://id.mkm.ee/statistics/def/measure/average_cost=AVG&http://id.mkm.ee/statistics/def/measure/number_of_crashes=SUM
+
 ### GET cubeOfAggregationSet
 
-Parameter: dataset (required), 1 ore more free dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
+Parameters:
+* dataset (required)
+* 1 ore more free dimension as array i.e. dimension[]=DIM1 & dimension[]=DIM2 ...
+
+Description: returns the cube of an aggregation set that has the specified dimensions
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension[]=http://purl.org/linked-data/sdmx/2009/dimension%23sex&dimension[]=http://id.vlaanderen.be/statistieken/def%23timePeriod](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension[]=http://purl.org/linked-data/sdmx/2009/dimension%23sex&dimension[]=http://id.vlaanderen.be/statistieken/def%23timePeriod)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://id.mkm.ee/statistics/def/cube/buildings&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/main_usage&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/municipality](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/cubeOfAggregationSet?dataset=http://id.mkm.ee/statistics/def/cube/buildings&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/main_usage&dimension%5B%5D=http://id.mkm.ee/statistics/def/dimension/municipality)
 
 Example result
 
 ```
 {
-  "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment_timePeriod_sex_3493111948015600912",
-  "label": "Employment (Scottish)"
+  "@id": "http://id.mkm.ee/statistics/def/cube/buildings_main_usage_municipality",
+  "label": "Buildings Cube(main_usage,municipality)"
 }
 ```
+## Cube metadata
 
 ### GET dataset-metadata
 
@@ -107,9 +133,11 @@ Example result
 
 Parameter: dataset (required)
 
+Description: returns all the dimensions of a cube
+
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://id.mkm.ee/statistics/def/cube/buildings](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimensions?dataset=http://id.mkm.ee/statistics/def/cube/buildings)
 
 Example result
 
@@ -117,20 +145,20 @@ Example result
 {
   "dimensions": [
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
-      "label": "Age group"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/main_usage",
+      "label": "Main Usage"
     },
     {
-      "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
-      "label": "Geslacht"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/municipality",
+      "label": "Municipality"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-      "label": "Period of time"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/property_type",
+      "label": "Property Type"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-      "label": "Reference Area"
+      "@id": "http://id.mkm.ee/statistics/def/dimension/status",
+      "label": "Status of Building"
     }
   ]
 }
@@ -140,9 +168,11 @@ Example result
 
 Parameter: dataset (required)
 
+Description: returns all the attributes of a cube
+
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?dataset=http://id.mkm.ee/statistics/def/cube/crashes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attributes?datasetet=http://id.mkm.ee/statistics/def/cube/crashes)
 
 Example result
 
@@ -150,8 +180,8 @@ Example result
 {
   "attributes": [
     {
-      "@id": "http://statistics.gov.scot/def/concept/measure-units/ratio",
-      "label": "ratio"
+      "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
+      "label": "Unit of measure"
     }
   ]
 }
@@ -161,9 +191,11 @@ Example result
 
 Parameter: dataset (required)
 
+Description: returns all the measures of a cube
+
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://id.mkm.ee/statistics/def/cube/crashes](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/measures?dataset=http://id.mkm.ee/statistics/def/cube/crashes)
 
 Example result
 
@@ -171,8 +203,16 @@ Example result
 {
   "measures": [
     {
-      "@id": "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad",
-      "label": "aantal werkzaamheidsgraad"
+      "@id": "http://id.mkm.ee/statistics/def/measure/average_cost",
+      "label": "Average Cost"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/def/measure/number_of_crashes",
+      "label": "Number of crashes"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/def/measure/total_cost",
+      "label": "Total Cost"
     }
   ]
 }
@@ -180,11 +220,15 @@ Example result
 
 ### GET dimension-values
 
-Parameter: dataset (required), dimension (required)
+Parameters:
+* dataset (required)
+* dimension (required)
+
+Description: returns all the values of a dimension that appear at a specific cube
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23timePeriod](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23timePeriod)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&dimension=http://id.mkm.ee/statistics/def/dimension/day](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&dimension=http://id.mkm.ee/statistics/def/dimension/day)
 
 Example result
 
@@ -192,36 +236,52 @@ Example result
 {
   "values": [
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2008#id",
-      "label": "2008"
+      "@id": "http://id.mkm.ee/statistics/concept/day/Friday",
+      "label": "Friday"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2009#id",
-      "label": "2009"
+      "@id": "http://id.mkm.ee/statistics/concept/day/Monday",
+      "label": "Monday"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2010#id",
-      "label": "2010"
+      "@id": "http://id.mkm.ee/statistics/concept/day/Saturday",
+      "label": "Saturday"
     },
     {
-      "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2011#id",
-      "label": "2011"
-    }, ...
+      "@id": "http://id.mkm.ee/statistics/concept/day/Sunday",
+      "label": "Sunday"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/concept/day/Thursday",
+      "label": "Thursday"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/concept/day/Tuesday",
+      "label": "Tuesday"
+    },
+    {
+      "@id": "http://id.mkm.ee/statistics/concept/day/Wednesday",
+      "label": "Wednesday"
+    }
   ],
   "dimension": {
-    "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-    "label": "Period of time"
+    "@id": "http://id.mkm.ee/statistics/def/dimension/day",
+    "label": "Day"
   }
 }
 ```
 
 ### GET attribute-values
 
-Parameter: dataset (required), attribute (required)
+Parameters:
+* dataset (required)
+* attribute (required)
+
+Description: returns all the values of an attribute that appear at a specific cube
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&attribute=http://purl.org/linked-data/sdmx/2009/attribute%23unitMeasure)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&attribute=http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/attribute-values?dataset=http://id.mkm.ee/statistics/def/cube/crashes&attribute=http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure)
 
 Example result
 
@@ -229,13 +289,9 @@ Example result
 {
   "values": [
     {
-      "@id": "http://statistics.gov.scot/def/concept/measure-units/people",
-      "label": "people"
-    },
-    {
-      "@id": "http://statistics.gov.scot/def/concept/measure-units/percentage-of-population",
-      "label": "percentage-of-population"
-    }
+      "@id": "http://qudt.org/1.1/vocab/unit#Number",
+      "label": "Number"
+    }    
   ],
   "dimension": {
     "@id": "http://purl.org/linked-data/sdmx/2009/attribute#unitMeasure",
@@ -247,11 +303,15 @@ Example result
 
 ### GET dimension-levels
 
-Parameter: dataset (required), dimension (required)
+Parameters:
+* dataset (required)
+* dimension (required)
+
+Description: returns all the levels of dimension values (in case of hierarchical data) that appear at a specific cube
 
 Example request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23refArea](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&dimension=http://id.vlaanderen.be/statistieken/def%23refArea)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen%23id&dimension=http://id.vlaanderen.be/statistieken/def%23refArea](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/dimension-levels?dataset=http://id.vlaanderen.be/statistieken/dq/kubus-bouwvergunningen%23id&dimension=http://id.vlaanderen.be/statistieken/def%23refArea)
 
 Example result
 
@@ -260,21 +320,29 @@ Example result
   "values": [
     {
       "@id": "http://id.fedstats.be/classificationlevel/province#id",
-      "label": "Provincie"
+      "label": "Province"
+    },
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/municipality#id",
+      "label": "Municipality"
     },
     {
       "@id": "http://id.fedstats.be/classificationlevel/region#id",
-      "label": "Région"
+      "label": "Region"
+    },
+    {
+      "@id": "http://id.fedstats.be/classificationlevel/district#id",
+      "label": "District"
     }
   ],
   "dimension": {
     "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-    "label": "Reference Area"
+    "label": "Reference area"
   }
 }
 ```
 
-
+## Cube data
 
 
 ### GET slice
@@ -285,73 +353,89 @@ Parameters:
 * 0 or more fixed dimension identifiers (optional), 
 * mode= URI | label (optional) - if no mode is defined then labels are returned
 * limit = NUMBER (e.g. limit=100) (optional)
+
+Description: returns a set of observations of the specified cube, that match to the specified fixed dimensions
   
 Example request 1:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&limit=100&mode=label](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&limit=100&mode=label)      
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&limit=100&mode=label](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&limit=100&mode=label)      
 
 Example result 1:
 
   ```
-  {
+ {
   "observations": [
     {
-      "Age group": "16-24",
-      "Geslacht": "",
-      "Period of time": "2004",
-      "Reference area": "Clackmannanshire",
-      "employment rate": "62.7",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+      "Average Cost": "1182",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "5",
+      "Time": "No available time",
+      "Total Cost": "5908",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/1"
     },
     {
-      "Age group": "16-24",
-      "Geslacht": "",
-      "Period of time": "2004",
-      "Reference area": "Clackmannanshire",
-      "employment rate": "62.7",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+      "Average Cost": "400",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "1",
+      "Time": "24:00",
+      "Total Cost": "400",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/2"
     },
     {
-      "Age group": "16-24",
-      "Geslacht": "",
-      "Period of time": "2005",
-      "Reference area": "Clackmannanshire",
-      "employment rate": "61.2",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2005/S12000005/gender/females/age/16-24/population-group/all/percentage-of-population/ratio"
+      "Average Cost": "627",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "1",
+      "Time": "21:00",
+      "Total Cost": "627",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/3"
     },
+    {
+      "Average Cost": "733",
+      "Date": "1-1-2013",
+      "Day": "Tuesday",
+      "Number of crashes": "2",
+      "Time": "20:00",
+      "Total Cost": "1465",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/4"
+    }, ...
+  ]
+ }
   ```
      
 Example request 2:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&mode=URI](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&mode=URI)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&measure[]=http://id.mkm.ee/statistics/def/measure/average_cost&http://id.mkm.ee/statistics/def/dimension/day=http://id.mkm.ee/statistics/concept/day/Friday&limit=100&mode=URI](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/slice?dataset=http://id.mkm.ee/statistics/def/cube/crashes&measure[]=http://id.mkm.ee/statistics/def/measure/average_cost&http://id.mkm.ee/statistics/def/dimension/day=http://id.mkm.ee/statistics/concept/day/Friday&limit=100&mode=URI)
 
 Example result 2:
 ```
 {
   "observations": [
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000005",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "79.1",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000005/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/notime",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "868",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/48"
     },
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000006",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "84.8",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000006/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/24",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "515",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/49"
     },
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000008",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "78.2",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000008/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/23",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "1500",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/50"
     },
     {
-      "http://id.vlaanderen.be/statistieken/def#refArea": "http://statistics.gov.scot/id/statistical-geography/S12000010",
-      "http://id.vlaanderen.be/statistieken/def#timePeriod": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-      "http://id.vlaanderen.be/statistieken/def#werkzaamheidsgraad": "77.9",
-      "@id": "http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment/year/2004/S12000010/gender/females/age/35-49/population-group/all/percentage-of-population/ratio"
+      "http://id.mkm.ee/statistics/def/dimension/date": "4-1-2013",
+      "http://id.mkm.ee/statistics/def/dimension/time": "http://id.mkm.ee/statistics/concept/time/21",
+      "http://id.mkm.ee/statistics/def/measure/average_cost": "282",
+      "@id": "http://id.mkm.ee/statistics/cube_crashes/observation/51"
     },...
   ]
 }
@@ -366,163 +450,174 @@ Parameter:
 * 0 ore more measures as array i.e. measure[]=M1 & measure[]=M2 (optional) - if no measures defined ALL are returned         
 * 0 or more fixed dimension identifiers (optional)
 
+Description: returns a 2D table representation of the cube’s observations that match to the specified fixed dimensions
+
 NOTE: currenlty the API supports maximum 1 row and 1 col. Need to update to support more!!!
 
 Example 2D table request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col[]=http://id.vlaanderen.be/statistieken/def%23refArea&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&col[]=http://id.vlaanderen.be/statistieken/def%23refArea&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mareg.gr/statistics/def/cube/vehicles_area_fuel_type_vehicle_type&measure%5B%5D=http://id.mareg.gr/statistics/def/measure/number_of_vehicles&row%5B%5D=http://id.mareg.gr/statistics/def/dimension/fuel_type&col%5B%5D=http://id.mareg.gr/statistics/def/dimension/vehicle_type&http://id.mareg.gr/statistics/def/dimension/area=http://195.251.218.39:8080/id/9186](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mareg.gr/statistics/def/cube/vehicles_area_fuel_type_vehicle_type&measure%5B%5D=http://id.mareg.gr/statistics/def/measure/number_of_vehicles&row%5B%5D=http://id.mareg.gr/statistics/def/dimension/fuel_type&col%5B%5D=http://id.mareg.gr/statistics/def/dimension/vehicle_type&http://id.mareg.gr/statistics/def/dimension/area=http://195.251.218.39:8080/id/9186)
 
 Example result
 ```
 {
   "structure": {
     "free_dimensions": {
-      "timePeriod": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-        "label": "Period of time"
+      "fuel_type": {
+        "@id": "http://id.mareg.gr/statistics/def/dimension/fuel_type",
+        "label": "Fuel Type"
       },
-      "refArea": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-        "label": "Reference Area"
+      "vehicle_type": {
+        "@id": "http://id.mareg.gr/statistics/def/dimension/vehicle_type",
+        "label": "Vehicle Type"
       }
     },
     "locked_dimensions": {
-      "sex": {
-        "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
-        "label": "Geslacht",
+      "area": {
+        "@id": "http://id.mareg.gr/statistics/def/dimension/area",
+        "label": "Area",
         "locked_value": {
-          "@id": "http://purl.org/linked-data/sdmx/2009/code#sex-F",
-          "label": "sex-F"
-        }
-      },
-      "leeftijdsgroep": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
-        "label": "Age group",
-        "locked_value": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49#id",
-          "label": "35-49"
+          "@id": "http://195.251.218.39:8080/id/9186",
+          "label": "Municipality of Athens"
         }
       }
     },
     "dimension_values": {
-      "refArea": {
-        "S12000033": {
-          "@id": "http://statistics.gov.scot/id/statistical-geography/S12000033",
-          "label": "Aberdeen City"
+      "vehicle_type": {
+        "Leoforio": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/Leoforio",
+          "label": "Bus"
         },
-        "S12000034": {
-          "@id": "http://statistics.gov.scot/id/statistical-geography/S12000034",
-          "label": "Aberdeenshire"
-        },...       
+        "Epivatiko": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/Epivatiko",
+          "label": "Car"
+        },
+        "EpivatikoMikto": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/EpivatikoMikto",
+          "label": "Car Mixed"
+        },
+        "Fortigo": {
+          "@id": "http://id.mareg.gr/statistics/concept/vehicle_type/Fortigo",
+          "label": "Goods Vehicle/Truck"
+        }, ...             
       },
-      "timePeriod": {
-        "jaar_2004": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-          "label": "2004"
+      "fuel_type": {
+        "Diesel": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Diesel",
+          "label": "Diesel"
         },
-        "jaar_2005": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2005#id",
-          "label": "2005"
-        },...     
+        "Diesel_Catalytic": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Diesel_Catalytic",
+          "label": "Diesel_Catalytic"
+        },
+        "Electric": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Electric",
+          "label": "Electric"
+        },
+        "Hybrid_petrol_electric": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Hybrid_petrol_electric",
+          "label": "Hybrid (petrol/electric)"
+        },
+        "Natural_Gas": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Natural_Gas",
+          "label": "Natural Gas"
+        },
+        "Nofuel": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Nofuel",
+          "label": "Nofuel"
+        },
+        "Petrol": {
+          "@id": "http://id.mareg.gr/statistics/concept/fueltype/Petrol",
+          "label": "Petrol"
+        }, ...        
       }
     }
   },
   "headers": {
     "columns": {
-      "refArea": ["S12000033", "S12000034", "S12000041","S12000035","S12000036","S12000005","S12000013",... ]
+      "vehicle_type": ["Leoforio", "Epivatiko", "EpivatikoMikto", "Fortigo", ... ]
     },
-    "rows": {"timePeriod": ["jaar_2004", "jaar_2005","jaar_2006","jaar_2007", "jaar_2008","jaar_2009", "jaar_2010","jaar_2011"]
+    "rows": {
+      "fuel_type": ["Diesel", "Diesel_Catalytic", "Electric", "Hybrid_petrol_electric", "Natural_Gas", "Nofuel", "Petrol", ...  ]
     }
   },
-  "data": [[73.4,79.6, 77.6, 78.3, 74.4, 79.1, 82.8, ...], [76.6,78.8, 74.5, 84.3, 80.0, 76.4, 89.3,...],...]
- }
-
+  "data": [
+    [158.0, 160.0, null, 900.0, ... ],
+    [  7.0,  33.0,  1.0, 202.0, ... ],
+    [ null,   2.0, null,  null, ... ],
+    [ null,  15.0, null,  null, ... ],
+    [ null,  null, null,  33.0, ... ],
+    [  5.0,   1.0, null, 155.0, ... ],
+    [ 25.0, 403.0, null, 681.0,     ],
+    ...
+  ]
+}
 ```
 
 Example 1D table request:
 
-GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&http://id.vlaanderen.be/statistieken/def%23refArea=http://statistics.gov.scot/id/statistical-geography/S12000033](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://statistics.gov.scot/data/economic-activity-benefits-and-tax-credits/employment&measure[]=http://id.vlaanderen.be/statistieken/def%23werkzaamheidsgraad&row[]=http://id.vlaanderen.be/statistieken/def%23timePeriod&http://purl.org/linked-data/sdmx/2009/dimension%23sex=http://purl.org/linked-data/sdmx/2009/code%23sex-F&http://id.vlaanderen.be/statistieken/def%23leeftijdsgroep=http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49%23id&http://id.vlaanderen.be/statistieken/def%23refArea=http://statistics.gov.scot/id/statistical-geography/S12000033)
+GET [http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mkm.ee/statistics/def/cube/crashes_day_time&measure%5B%5D=http://id.mkm.ee/statistics/def/measure/number_of_crashes&row%5B%5D=http://id.mkm.ee/statistics/def/dimension/day&http://id.mkm.ee/statistics/def/dimension/time=http://id.mkm.ee/statistics/concept/time/21](http://wapps.islab.uom.gr:8084/JSON-QB-REST-API/table?dataset=http://id.mkm.ee/statistics/def/cube/crashes_day_time&measure%5B%5D=http://id.mkm.ee/statistics/def/measure/number_of_crashes&row%5B%5D=http://id.mkm.ee/statistics/def/dimension/day&http://id.mkm.ee/statistics/def/dimension/time=http://id.mkm.ee/statistics/concept/time/21)
 
 Example result:
 ```
 {
   "structure": {
     "free_dimensions": {
-      "timePeriod": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#timePeriod",
-        "label": "Period of time"
+      "day": {
+        "@id": "http://id.mkm.ee/statistics/def/dimension/day",
+        "label": "Day"
       }
     },
     "locked_dimensions": {
-      "sex": {
-        "@id": "http://purl.org/linked-data/sdmx/2009/dimension#sex",
-        "label": "Geslacht",
+      "time": {
+        "@id": "http://id.mkm.ee/statistics/def/dimension/time",
+        "label": "Time",
         "locked_value": {
-          "@id": "http://purl.org/linked-data/sdmx/2009/code#sex-F",
-          "label": "sex-F"
-        }
-      },
-      "leeftijdsgroep": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#leeftijdsgroep",
-        "label": "Age group",
-        "locked_value": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/leeftijdsgroep_35-49#id",
-          "label": "35-49"
-        }
-      },
-      "refArea": {
-        "@id": "http://id.vlaanderen.be/statistieken/def#refArea",
-        "label": "Reference Area",
-        "locked_value": {
-          "@id": "http://statistics.gov.scot/id/statistical-geography/S12000033",
-          "label": "Aberdeen City"
+          "@id": "http://id.mkm.ee/statistics/concept/time/21",
+          "label": "21:00"
         }
       }
     },
     "dimension_values": {
-      "timePeriod": {
-        "jaar_2004": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2004#id",
-          "label": "2004"
+      "day": {
+        "Friday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Friday",
+          "label": "Friday"
         },
-        "jaar_2005": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2005#id",
-          "label": "2005"
+        "Monday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Monday",
+          "label": "Monday"
         },
-        "jaar_2006": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2006#id",
-          "label": "2006"
+        "Saturday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Saturday",
+          "label": "Saturday"
         },
-        "jaar_2007": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2007#id",
-          "label": "2007"
+        "Sunday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Sunday",
+          "label": "Sunday"
         },
-        "jaar_2008": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2008#id",
-          "label": "2008"
+        "Thursday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Thursday",
+          "label": "Thursday"
         },
-        "jaar_2009": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2009#id",
-          "label": "2009"
+        "Tuesday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Tuesday",
+          "label": "Tuesday"
         },
-        "jaar_2010": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2010#id",
-          "label": "2010"
-        },
-        "jaar_2011": {
-          "@id": "http://id.vlaanderen.be/statistieken/concept/jaar_2011#id",
-          "label": "2011"
+        "Wednesday": {
+          "@id": "http://id.mkm.ee/statistics/concept/day/Wednesday",
+          "label": "Wednesday"
         }
       }
     }
   },
   "headers": {
-    "rows": {"timePeriod": ["jaar_2004","jaar_2005","jaar_2006","jaar_2007","jaar_2008","jaar_2009", "jaar_2010", "jaar_2011"   ]
+    "rows": {
+      "day": ["Friday", "Monday", "Saturday", "Sunday", "Thursday", "Tuesday", "Wednesday" ]
     }
   },
-  "data": [73.4, 76.6, 77.8, 79.6, 82.0, 75.5, 76.3, 80.2]
+  "data": [860.0, 918.0, 902.0, 30.0, 1038.0, 288.0, 1324.0 ]
 }
-
 ```
 
 
