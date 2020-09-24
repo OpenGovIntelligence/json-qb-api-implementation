@@ -1,3 +1,4 @@
+//Creator Dimitris Zeginis
 package org.certh.jsonqb.core;
 
 import java.util.ArrayList;
